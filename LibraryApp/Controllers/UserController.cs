@@ -13,13 +13,28 @@ public class UserController : ControllerBase
 {
      private const string ConnectionString = $"Server=localhost;Database=LibraryDb;Trusted_Connection=True;TrustServerCertificate=True;";
 
-    [HttpGet("GetAll")]
+    [HttpGet("GetAllUsers")]
     public async Task GetUsersAsync(HttpListenerContext context)
     {
         using var writer = new StreamWriter(context.Response.OutputStream);
 
         using var connection = new SqlConnection(ConnectionString);
         var users = await connection.QueryAsync<User>("select * from Users");
+
+        var usersHtml = users.GetHtml();
+        await writer.WriteLineAsync(usersHtml);
+        context.Response.ContentType = "text/html";
+
+        context.Response.StatusCode = (int)HttpStatusCode.OK;
+    }
+    [HttpGet("GetAllUsersBooks")]
+    public async Task GetUsersBooksAsync(HttpListenerContext context)
+    {
+        using var writer = new StreamWriter(context.Response.OutputStream);
+
+        using var connection = new SqlConnection(ConnectionString);
+        var users = await connection.QueryAsync<UserBook>(@"SELECT u.Id, u.Email,u.FullName,b.Author,b.Name,b.Price
+                                                        FROM Users u JOIN Books b ON (u.BookId = b.Id)");
 
         var usersHtml = users.GetHtml();
         await writer.WriteLineAsync(usersHtml);
@@ -140,12 +155,13 @@ public class UserController : ControllerBase
         using var connection = new SqlConnection(ConnectionString);
         var affectedRowsCount = await connection.ExecuteAsync(
             @"update Users
-        set FullName = @FullName, Email = @Email
+        set FullName = @FullName, Email = @Email, BookId=@BookId
         where Id = @Id",
             param: new
             {
                 userToUpdate.FullName,
                 userToUpdate.Email,
+                userToUpdate.BookId,
                 Id = userIdToUpdate
             });
 
