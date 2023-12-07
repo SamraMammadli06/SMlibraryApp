@@ -9,49 +9,49 @@ using LibraryApp.Extensions;
 using Dapper;
 using LibraryApp.Attributes;
 
-public class BookController : ControllerBase
+public class UserController : ControllerBase
 {
      private const string ConnectionString = $"Server=localhost;Database=LibraryDb;Trusted_Connection=True;TrustServerCertificate=True;";
 
     [HttpGet("GetAll")]
-    public async Task GetBooksAsync(HttpListenerContext context)
+    public async Task GetUsersAsync(HttpListenerContext context)
     {
         using var writer = new StreamWriter(context.Response.OutputStream);
 
         using var connection = new SqlConnection(ConnectionString);
-        var books = await connection.QueryAsync<Book>("select * from Books");
+        var users = await connection.QueryAsync<User>("select * from Users");
 
-        var booksHtml = books.GetHtml();
-        await writer.WriteLineAsync(booksHtml);
+        var usersHtml = users.GetHtml();
+        await writer.WriteLineAsync(usersHtml);
         context.Response.ContentType = "text/html";
 
         context.Response.StatusCode = (int)HttpStatusCode.OK;
     }
 
     [HttpGet("GetById")]
-    public async Task GetBookByIdAsync(HttpListenerContext context)
+    public async Task GetUserByIdAsync(HttpListenerContext context)
     {
-        var bookIdToGetObj = context.Request.QueryString["id"];
+        var userIdToGetObj = context.Request.QueryString["id"];
 
-        if (bookIdToGetObj == null || int.TryParse(bookIdToGetObj, out int bookIdToGet) == false)
+        if (userIdToGetObj == null || int.TryParse(userIdToGetObj, out int userIdToGet) == false)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return;
         }
 
         using var connection = new SqlConnection(ConnectionString);
-        var book = await connection.QueryFirstOrDefaultAsync<Book>(
-            sql: "select top 1 * from Books where Id = @Id",
-            param: new { Id = bookIdToGet });
+        var user = await connection.QueryFirstOrDefaultAsync<User>(
+            sql: "select top 1 * from Users where Id = @Id",
+            param: new { Id = userIdToGet });
 
-        if (book is null)
+        if (user is null)
         {
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             return;
         }
 
         using var writer = new StreamWriter(context.Response.OutputStream);
-        await writer.WriteLineAsync(JsonSerializer.Serialize(book));
+        await writer.WriteLineAsync(JsonSerializer.Serialize(user));
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.OK;
@@ -60,39 +60,38 @@ public class BookController : ControllerBase
 
 
     [HttpPost("Create")]
-    public async Task PostBookAsync(HttpListenerContext context)
+    public async Task PostuserAsync(HttpListenerContext context)
     {
         using var reader = new StreamReader(context.Request.InputStream);
         var json = await reader.ReadToEndAsync();
 
-        var newbook = JsonSerializer.Deserialize<Book>(json);
+        var newuser = JsonSerializer.Deserialize<User>(json);
 
-        if (newbook == null || newbook.Price == null || string.IsNullOrWhiteSpace(newbook.Name))
+        if (newuser == null || newuser.FullName == null)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return;
         }
 
         using var connection = new SqlConnection(ConnectionString);
-        var books = await connection.ExecuteAsync(
-            @"insert into Books (Name, Author,Price) 
-        values(@Name, @Author,@Price)",
+        var users = await connection.ExecuteAsync(
+            @"insert into Users (FullName, Email) 
+        values(@FullName, @Email)",
             param: new
             {
-                newbook.Name,
-                newbook.Author,
-                newbook.Price,
+                newuser.FullName,
+                newuser.Email,
             });
 
         context.Response.StatusCode = (int)HttpStatusCode.Created;
     }
 
     [HttpDelete]
-    public async Task DeleteBookAsync(HttpListenerContext context)
+    public async Task DeleteUserAsync(HttpListenerContext context)
     {
-        var bookIdToDeleteObj = context.Request.QueryString["id"];
+        var userIdToDeleteObj = context.Request.QueryString["id"];
 
-        if (bookIdToDeleteObj == null || int.TryParse(bookIdToDeleteObj, out int bookIdToDelete) == false)
+        if (userIdToDeleteObj == null || int.TryParse(userIdToDeleteObj, out int userIdToDelete) == false)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return;
@@ -100,11 +99,11 @@ public class BookController : ControllerBase
 
         using var connection = new SqlConnection(ConnectionString);
         var deletedRowsCount = await connection.ExecuteAsync(
-            @"delete Books
+            @"delete Users
         where Id = @Id",
             param: new
             {
-                Id = bookIdToDelete,
+                Id = userIdToDelete,
             });
 
         if (deletedRowsCount == 0)
@@ -117,11 +116,11 @@ public class BookController : ControllerBase
     }
 
     [HttpPut]
-    public async Task PutBookAsync(HttpListenerContext context)
+    public async Task PutUserAsync(HttpListenerContext context)
     {
-        var bookIdToUpdateObj = context.Request.QueryString["id"];
+        var userIdToUpdateObj = context.Request.QueryString["id"];
 
-        if (bookIdToUpdateObj == null || int.TryParse(bookIdToUpdateObj, out int bookIdToUpdate) == false)
+        if (userIdToUpdateObj == null || int.TryParse(userIdToUpdateObj, out int userIdToUpdate) == false)
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return;
@@ -130,9 +129,9 @@ public class BookController : ControllerBase
         using var reader = new StreamReader(context.Request.InputStream);
         var json = await reader.ReadToEndAsync();
 
-        var bookToUpdate = JsonSerializer.Deserialize<Book>(json);
+        var userToUpdate = JsonSerializer.Deserialize<User>(json);
 
-        if (bookToUpdate == null || bookToUpdate.Price == null || string.IsNullOrEmpty(bookToUpdate.Name))
+        if (userToUpdate == null || string.IsNullOrEmpty(userToUpdate.FullName))
         {
             context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             return;
@@ -140,15 +139,14 @@ public class BookController : ControllerBase
 
         using var connection = new SqlConnection(ConnectionString);
         var affectedRowsCount = await connection.ExecuteAsync(
-            @"update Books
-        set Name = @Name, Price = @Price, Author = @Author
+            @"update Users
+        set FullName = @FullName, Email = @Email
         where Id = @Id",
             param: new
             {
-                bookToUpdate.Name,
-                bookToUpdate.Price,
-                bookToUpdate.Author,
-                Id = bookIdToUpdate
+                userToUpdate.FullName,
+                userToUpdate.Email,
+                Id = userIdToUpdate
             });
 
         if (affectedRowsCount == 0)

@@ -4,7 +4,7 @@ using System.Text;
 
 public static class EnumerableExtensions
 {
-    public static string GetHtml<T>(this IEnumerable<T> products)
+    public static string GetHtml<T>(this IEnumerable<T> items)
     {
         Type type = typeof(T);
 
@@ -12,12 +12,15 @@ public static class EnumerableExtensions
 
         StringBuilder sb = new StringBuilder(100);
         sb.Append("<ul>");
-
-        foreach (var product in products)
+        foreach (var item in items)
         {
+            
             foreach (var prop in props)
             {
-                sb.Append($"<li><span>{prop.Name}: </span>{prop.GetValue(product)}</li>");
+                if(prop.Name == "BookId")
+                    continue;
+                sb.Append($"<li><span>{prop.Name}: </span>{prop.GetValue(item)}</li>");
+                
             }
             sb.Append("<br/>");
         }
