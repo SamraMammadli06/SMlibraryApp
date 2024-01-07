@@ -4,7 +4,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IRepository, BooksRepository>();
+builder.Services.AddTransient<IRepository>(provider => {
+    const string connectionStringName = "LibraryDb";
+    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+    if(string.IsNullOrWhiteSpace(connectionString)) {
+        throw new Exception($"{connectionStringName} not found");
+    }
+    
+    return new BooksRepository(connectionString);
+});;
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

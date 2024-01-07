@@ -11,8 +11,10 @@ namespace SMlibraryApp.Repository;
 public class BooksRepository : IRepository
 {
     
-    private const string ConnectionString = $"Server=localhost;Database=LibraryDb;Trusted_Connection=True;TrustServerCertificate=True;";
-
+    private readonly string ConnectionString;
+    public BooksRepository(string connection){
+        this.ConnectionString = connection;
+    }
     public  IEnumerable<Book> GetBooks()
     {
         using var connection = new SqlConnection(ConnectionString);
