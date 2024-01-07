@@ -1,8 +1,10 @@
+using SMlibraryApp.Repository.Base;
+using SMlibraryApp.Repository;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddTransient<IRepository, BooksRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -5,9 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using SMlibraryApp.Models;
-
+using SMlibraryApp.Repository.Base;
 namespace SMlibraryApp.Repository;
-public class BooksRepository
+
+public class BooksRepository : IRepository
 {
     
     private const string ConnectionString = $"Server=localhost;Database=LibraryDb;Trusted_Connection=True;TrustServerCertificate=True;";

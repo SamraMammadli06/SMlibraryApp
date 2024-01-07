@@ -4,13 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SMlibraryApp.Models;
-using SMlibraryApp.Repository;
-
+using SMlibraryApp.Repository.Base;
 namespace SMlibraryApp.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly BooksRepository repository = new BooksRepository();
+        private readonly IRepository repository;
+        public BooksController(IRepository repository){
+            this.repository = repository;
+        }
        [HttpGet]
         public IActionResult GetBooks()
         {
