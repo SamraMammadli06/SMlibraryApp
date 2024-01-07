@@ -1,0 +1,29 @@
+@model IEnumerable<Book>
+@{
+  Book newbook = new Book();
+}
+<div class="card" style="width: 18rem;">
+  <ul class = "border border-dark-subtle" class="list-group list-group-flush">
+    @foreach(var item in @Model){
+        <li class="list-group-item">
+        <div>@item.Id</div>
+        <div>Name: @item.Name</div>
+        <div>Author: @item.Author</div>
+        <div>Price: @item.Price</div>
+        </li>
+    }
+  </ul>
+</div>
+
+<form asp-controller="Books" asp-action="PostBook" method="post">
+    <label asp-for="@newbook.Name">Name: </label>
+    <input type="text" asp-for="@newbook.Name">
+    <br>
+    <label asp-for="@newbook.Author">Author: </label>
+    <input type="text" asp-for="@newbook.Author">
+    <br>
+    <label asp-for="@newbook.Price">Price: </label>
+    <input type="text" asp-for="@newbook.Price">
+    <br>
+    <input type="submit" value="Add">
+</form>

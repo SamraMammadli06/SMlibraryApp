@@ -18,7 +18,7 @@ namespace SMlibraryApp.Controllers
             if(books is null){
                 return NotFound("Nothing Found");
             }
-            return Ok(books);
+            return View(books);
         }
         [HttpGet]
         public IActionResult GetBookById(int id)
@@ -27,16 +27,18 @@ namespace SMlibraryApp.Controllers
             if(book is null){
                 return NotFound("Book with this id not found");
             }
-            return Ok(book);
+            return View(book);
         }
         [HttpPost]
-        public IActionResult PostBook(Book newbook){
+        public IActionResult PostBook([FromForm] Book newbook){
+            System.Console.WriteLine(newbook);
             var count = repository.PostBook(newbook);
             if(count==0){
                 return StatusCode(505);
             }
-            return Ok();
+            return View();
         }
+
         [HttpDelete]
         public IActionResult DeleteBook(int id){
             var count =  repository.DeleteBook(id);
