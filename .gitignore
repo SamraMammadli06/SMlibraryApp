@@ -10,9 +10,6 @@
 *.userosscache
 *.sln.docstates
 
-vscode
-bin
-obj
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -129,7 +126,6 @@ ipch/
 *.e2e
 
 # TFS 2012 Local Workspace
-LibraryApp$tf/
 
 # Guidance Automation Toolkit
 *.gpState

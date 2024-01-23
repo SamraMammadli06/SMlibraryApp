@@ -1,0 +1,55 @@
+@model IEnumerable<Book>
+@{
+  Book newbook = new Book();
+}
+<div class="card" style="width: 18rem;">
+  <ul class = "border border-dark-subtle" class="list-group list-group-flush">
+    @foreach(var item in @Model){
+        <li class="list-group-item">
+      <form id="deleteForm-@item.Id" asp-controller="Books" asp-action ="DeleteBook">
+        <div id="ItemId-@item.Id">@item.Id</div>
+        <div>Name: @item.Name</div>
+        <div>Author: @item.Author</div>
+        <div>Price: @item.Price</div>
+        <button type="button" onclick= "submitDeleteForm('@item.Id')" >Delete</button>
+          <script>//это из-за того что в forms нету метода delete
+            function submitDeleteForm(itemId) {
+              var form = document.getElementById('deleteForm-'+itemId);
+              var formData = new FormData(form);
+              fetch(form.action+'?id='+itemId, {
+                  method: 'DELETE',
+                  body: formData
+              })
+              .then(response => {
+                  if (response.ok) {
+                      console.log('Resource deleted successfully');
+                      setTimeout(() => {
+                        location.reload();
+                       }, 100)
+                  } else {
+                      console.error('Error deleting resource');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+              });
+          }
+          </script>
+      </form>
+        </li>
+    }
+  </ul>
+</div>
+
+<form asp-controller="Books" asp-action="PostBook" method="post">
+    <label asp-for="@newbook.Name">Name: </label>
+    <input type="text" asp-for="@newbook.Name">
+    <br>
+    <label asp-for="@newbook.Author">Author: </label>
+    <input type="text" asp-for="@newbook.Author">
+    <br>
+    <label asp-for="@newbook.Price">Price: </label>
+    <input type="text" asp-for="@newbook.Price">
+    <br>
+    <input type="submit" value="Add">
+</form>
