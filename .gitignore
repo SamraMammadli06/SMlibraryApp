@@ -10,12 +10,13 @@
 *.userosscache
 *.sln.docstates
 
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
 # Mono auto generated files
 mono_crash.*
-.sln
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -125,7 +126,6 @@ ipch/
 *.e2e
 
 # TFS 2012 Local Workspace
-$tf/
 
 # Guidance Automation Toolkit
 *.gpState
