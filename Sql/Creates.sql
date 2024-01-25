@@ -1,8 +1,8 @@
-create database LibaryDb;
+create database LibraryDb;
 
-use LibaryDb;
+use LibraryDb;
 
-create table Book (
+create table Books (
     [Id] int primary key identity,
     [Name] nvarchar(50) not null,
     [Author] nvarchar(50) not null,

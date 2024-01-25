@@ -8,9 +8,9 @@ namespace SMlibraryApp.Repository.Base
 {
     public interface IRepository
     {
-        public  IEnumerable<Book> GetBooks();
-        public Book? GetBookById(int id);
-        public int PostBook(Book newbook);
-        public int DeleteBook(int id);
+        public  Task<IEnumerable<Book>> GetBooks();
+        public Task<Book?> GetBookById(int id);
+        public Task<int> Create(Book newbook);
+        public Task<int> DeleteBook(int id);
     }
 }
