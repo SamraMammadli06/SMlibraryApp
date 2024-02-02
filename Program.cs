@@ -1,5 +1,7 @@
 using SMlibraryApp.Repository.Base;
 using SMlibraryApp.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,6 +16,12 @@ builder.Services.AddTransient<IRepository>(provider => {
     return new BooksRepository(connectionString);
 });;
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options => {
+        options.LoginPath = "/Identity/Login";
+        options.ReturnUrlParameter = "returnUrl";
+    });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -34,6 +42,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Books}/{action=Get}");
+    pattern: "{controller=Identity}/{action=Login}");
 
 app.Run();
