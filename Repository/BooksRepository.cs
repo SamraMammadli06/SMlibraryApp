@@ -8,7 +8,7 @@ using SMlibraryApp.Models;
 using SMlibraryApp.Repository.Base;
 namespace SMlibraryApp.Repository;
 
-public class BooksRepository : IRepository
+public class BooksRepository : IBookRepository
 {
     
     private readonly string ConnectionString;

@@ -12,8 +12,8 @@ namespace SMlibraryApp.Controllers;
 [Authorize]
 public class BooksController : Controller
 {
-    private readonly IRepository repository;
-    public BooksController(IRepository repository){
+    private readonly IBookRepository repository;
+    public BooksController(IBookRepository repository){
         this.repository = repository;
     }
 

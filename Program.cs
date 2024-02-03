@@ -1,12 +1,13 @@
 using SMlibraryApp.Repository.Base;
 using SMlibraryApp.Repository;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SMlibraryApp.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IRepository>(provider => {
+builder.Services.AddTransient<IBookRepository>(provider => {
     const string connectionStringName = "LibraryDb";
     string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
     if(string.IsNullOrWhiteSpace(connectionString)) {
@@ -15,7 +16,7 @@ builder.Services.AddTransient<IRepository>(provider => {
     
     return new BooksRepository(connectionString);
 });;
-
+builder.Services.AddTransient<LoggingMiddleware>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => {
         options.LoginPath = "/Identity/Login";
@@ -39,7 +40,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware<LoggingMiddleware>();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Identity}/{action=Login}");
