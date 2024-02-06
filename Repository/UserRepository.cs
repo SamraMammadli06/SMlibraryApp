@@ -38,7 +38,7 @@ public class UserRepository : IUserRepository
         return await users;
     }
 
-    public async Task<User> FindUser(User user)
+    public async Task<User?> FindUser(User user)
     {
         using var connection = new SqlConnection(ConnectionString);
         var u = connection.QueryFirstOrDefaultAsync<User>(@"select * from Users

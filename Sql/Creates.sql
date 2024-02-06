@@ -22,6 +22,6 @@ create table Loggings(
 	[url] nvarchar(200),
 	[methodType] nvarchar(200),
 	[statusCode] int,
-	[requestBody] nvarchar(255),
-	[responseBody] nvarchar(255)
+	[requestBody] nvarchar(max),
+	[responseBody] nvarchar(max)
 )

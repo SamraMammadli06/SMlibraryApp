@@ -1,5 +1,7 @@
 using System.Data.SqlClient;
 using Dapper;
+using Microsoft.AspNetCore.DataProtection;
+using SMlibraryApp.Models;
 using SMlibraryApp.Repository.Base;
 
 namespace SMlibraryApp.Repository;
@@ -11,7 +13,7 @@ public class LogRepository : ILogRepository
         this.ConnectionString = connection;
     }
 
-    public async Task<int> CreateLog(HttpContext context)
+    public async Task<int> CreateLog(Log log)
     {
         using var connection = new SqlConnection(ConnectionString);
         var count = connection.ExecuteAsync(@"insert into Loggings([userId],[url],
@@ -20,12 +22,12 @@ public class LogRepository : ILogRepository
             @methodType,@statusCode,@requestBody,@responseBody)",
             param: new
             {
-                userId = 1,
-                url = context.Request.Path.ToString(),
-                methodType = context.Request.Method.ToString(),
-                statusCode = context.Response.StatusCode,
-                requestBody = context.Request.Body.ToString(),
-                responseBody = context.Response.Body.ToString(),
+                userId = log.userId,
+                url = log.url,
+                methodType = log.methodType,
+                statusCode =  log.statusCode,
+                requestBody = log.requestBody,
+                responseBody = log.responseBody,
             });
         return await count;
     }

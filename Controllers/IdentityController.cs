@@ -50,9 +50,9 @@ public class IdentityController : Controller
     {
         var count = await userRepository.Create(new User()
         {
+            Email = registerDto.Email,
             UserName = registerDto.UserName,
             Password = registerDto.Password,
-            Email = registerDto.Email,
         });
         return RedirectToAction("Login");
     }

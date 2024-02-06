@@ -1,7 +1,8 @@
 using SMlibraryApp.Repository.Base;
 using SMlibraryApp.Repository;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using SMlibraryApp.Middlewares;
+using SMlibraryApp.Services.Base;
+using SMlibraryApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,8 +46,13 @@ builder.Services.AddScoped<IUserRepository>(provider =>
     return new UserRepository(connectionString);
 });
 
-builder.Services.AddTransient<LoggingMiddleware>();
+builder.Services.AddTransient<ILogService>(provider =>
+{
+    bool IsLogEnabled = builder.Configuration.GetSection("IsLogEnabled").Get<bool>();
+    return new LogService(IsLogEnabled);
+});
 
+builder.Services.AddTransient<LoggingMiddleware>();
 
 var app = builder.Build();
 
