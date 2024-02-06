@@ -8,7 +8,7 @@ namespace SMlibraryApp.Repository.Base
 {
     public interface IBookRepository
     {
-        public  Task<IEnumerable<Book>> GetBooks();
+        public Task<IEnumerable<Book>> GetBooks();
         public Task<Book?> GetBookById(int id);
         public Task<int> Create(Book newbook);
         public Task<int> DeleteBook(int id);

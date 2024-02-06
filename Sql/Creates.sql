@@ -17,11 +17,11 @@ create table Users(
 )
 
 create table Loggings(
-    [log-id] int,
-	[userid ]nvarchar,
-	[url] nvarchar,
-	[method-type] nvarchar,
-	[status-code] nvarchar,
-	[request-body] nvarchar,
-	[response-body] nvarchar
+    [logId] int primary key identity,
+	[userId ] int,
+	[url] nvarchar(200),
+	[methodType] nvarchar(200),
+	[statusCode] int,
+	[requestBody] nvarchar(255),
+	[responseBody] nvarchar(255)
 )

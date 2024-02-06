@@ -10,17 +10,16 @@ namespace SMlibraryApp.Repository;
 
 public class BooksRepository : IBookRepository
 {
-    
     private readonly string ConnectionString;
-    public BooksRepository(string connection){
+    public BooksRepository(string connection)
+    {
         this.ConnectionString = connection;
     }
-    public  async Task<IEnumerable<Book>> GetBooks()
+    public async Task<IEnumerable<Book>> GetBooks()
     {
         using var connection = new SqlConnection(ConnectionString);
         var books = connection.QueryAsync<Book>("select * from Books");
         return await books;
-
     }
 
     public async Task<Book?> GetBookById(int Id)
@@ -32,11 +31,10 @@ public class BooksRepository : IBookRepository
         return await book;
     }
 
-
     public async Task<int> Create(Book newbook)
     {
         using var connection = new SqlConnection(ConnectionString);
-        var count =  connection.ExecuteAsync(
+        var count = connection.ExecuteAsync(
             @"insert into Books (Name, Author,Price) 
         values(@Name, @Author,@Price)",
             param: new
@@ -48,10 +46,10 @@ public class BooksRepository : IBookRepository
         return await count;
     }
 
-    public  async Task<int> DeleteBook(int id)
+    public async Task<int> DeleteBook(int id)
     {
         using var connection = new SqlConnection(ConnectionString);
-        var deletedRowsCount =  connection.ExecuteAsync(
+        var deletedRowsCount = connection.ExecuteAsync(
             @"delete Books
         where Id = @Id",
             param: new

@@ -5,24 +5,48 @@ using SMlibraryApp.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IBookRepository>(provider => {
+
+builder.Services.AddDataProtection();
+
+builder.Services.AddScoped<IBookRepository>(provider =>
+{
     const string connectionStringName = "LibraryDb";
     string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
-    if(string.IsNullOrWhiteSpace(connectionString)) {
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
         throw new Exception($"{connectionStringName} not found");
     }
-    
+
     return new BooksRepository(connectionString);
-});;
+});
+
+builder.Services.AddScoped<ILogRepository>(provider =>
+{
+    const string connectionStringName = "LibraryDb";
+    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new Exception($"{connectionStringName} not found");
+    }
+
+    return new LogRepository(connectionString);
+});
+
+builder.Services.AddScoped<IUserRepository>(provider =>
+{
+    const string connectionStringName = "LibraryDb";
+    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new Exception($"{connectionStringName} not found");
+    }
+
+    return new UserRepository(connectionString);
+});
+
 builder.Services.AddTransient<LoggingMiddleware>();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => {
-        options.LoginPath = "/Identity/Login";
-        options.ReturnUrlParameter = "returnUrl";
-    });
-builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -38,8 +62,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseAuthentication();
-app.UseAuthorization();
+
 app.UseMiddleware<LoggingMiddleware>();
 app.MapControllerRoute(
     name: "default",

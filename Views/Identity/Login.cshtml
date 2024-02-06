@@ -13,4 +13,5 @@
     <input type="password" asp-for="@Password">
     <br>
     <input type="submit" value = 'Login'>
+    <input onclick="location.href='@Url.Action("Register", "Identity")'" type="button"  value = 'Create new user'>
 </form>

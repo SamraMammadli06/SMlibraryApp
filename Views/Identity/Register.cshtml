@@ -1,11 +1,22 @@
-@page
-@model SMlibraryApp.Views.Identity.Register
 @{
     ViewData["Title"] = "Register";
+    string UserName = string.Empty;
+    string Password = string.Empty;
+    string Email = string.Empty;
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<div>
-    
-</div>
+<form method="post" asp-action="Register">
+    <label asp-for="@UserName">UserName</label>
+    <input type="text" asp-for="@UserName">
+    <br>
+    <label asp-for="@Password">Password</label>
+    <input type="password" asp-for="@Password">
+    <br>
+    <br>
+    <label asp-for="@Email">Email</label>
+    <input type="email" asp-for="@Email">
+    <br>
+    <input type="submit" value = 'Create'>
+</form>

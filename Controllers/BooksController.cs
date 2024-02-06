@@ -8,12 +8,11 @@ using SMlibraryApp.Models;
 using SMlibraryApp.Repository.Base;
 namespace SMlibraryApp.Controllers;
 
-
-[Authorize]
 public class BooksController : Controller
 {
     private readonly IBookRepository repository;
-    public BooksController(IBookRepository repository){
+    public BooksController(IBookRepository repository)
+    {
         this.repository = repository;
     }
 
@@ -29,25 +28,30 @@ public class BooksController : Controller
     public async Task<IActionResult> GetById(int id)
     {
         var book = await repository.GetBookById(id);
-        if(book is null){
+        if (book is null)
+        {
             return NotFound($"Book with id {id} not found");
         }
         return View(book);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] Book newbook){
+    public async Task<IActionResult> Create([FromForm] Book newbook)
+    {
         var count = await repository.Create(newbook);
-        if(count==0){
+        if (count == 0)
+        {
             return BadRequest();
         }
         return View();
     }
 
     [HttpDelete]
-    public async Task<IActionResult> Delete(int id){
-        var count =  await repository.DeleteBook(id);
-        if(count==0){
+    public async Task<IActionResult> Delete(int id)
+    {
+        var count = await repository.DeleteBook(id);
+        if (count == 0)
+        {
             return NotFound();
         }
         return Ok();
