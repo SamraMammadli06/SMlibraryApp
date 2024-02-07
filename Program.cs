@@ -10,6 +10,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDataProtection();
 
+builder.Services.AddSingleton<IIdentityService, IdentityService>();
+
 builder.Services.AddScoped<IBookRepository>(provider =>
 {
     const string connectionStringName = "LibraryDb";

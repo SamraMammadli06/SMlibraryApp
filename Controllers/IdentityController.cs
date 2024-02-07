@@ -43,7 +43,7 @@ public class IdentityController : Controller
 
         var userHash = this.dataProtector.Protect(user.Id.ToString());
         base.HttpContext.Response.Cookies.Append("Authorize", userHash);
-        return base.Ok();
+        return RedirectToAction("Get", "Books");
     }
 
     public async Task<IActionResult> Register([FromForm] RegisterDto registerDto)
