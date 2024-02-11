@@ -14,36 +14,33 @@ namespace SMlibraryApp.Controllers
             this.repository = repository;
         }
        [HttpGet]
-        public IActionResult GetBooks()
+        public async Task<IActionResult> Get()
         {
-            var books = repository.GetBooks();
-            if(books is null){
-                return NotFound("Nothing Found");
-            }
+            var books = await repository.GetBooks();
             return View(books);
         }
         [HttpGet]
-        public IActionResult GetBookById(int id)
+        [Route("[controller]/[action]/{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var book = repository.GetBookById(id);
+            var book = await repository.GetBookById(id);
             if(book is null){
-                return NotFound("Book with this id not found");
+                return NotFound($"Book with id {id} not found");
             }
             return View(book);
         }
         [HttpPost]
-        public IActionResult PostBook([FromForm] Book newbook){
-            System.Console.WriteLine(newbook);
-            var count = repository.PostBook(newbook);
+        public async Task<IActionResult> Create([FromForm] Book newbook){
+            var count = await repository.Create(newbook);
             if(count==0){
-                return StatusCode(505);
+                return BadRequest();
             }
             return View();
         }
 
         [HttpDelete]
-        public IActionResult DeleteBook(int id){
-            var count =  repository.DeleteBook(id);
+        public async Task<IActionResult> Delete(int id){
+            var count =  await repository.DeleteBook(id);
             if(count==0){
                 return NotFound();
             }

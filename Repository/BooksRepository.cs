@@ -15,29 +15,28 @@ public class BooksRepository : IRepository
     public BooksRepository(string connection){
         this.ConnectionString = connection;
     }
-    public  IEnumerable<Book> GetBooks()
+    public  async Task<IEnumerable<Book>> GetBooks()
     {
         using var connection = new SqlConnection(ConnectionString);
-        var books = connection.Query<Book>("select * from Books");
-        return books;
+        var books = connection.QueryAsync<Book>("select * from Books");
+        return await books;
 
     }
 
-    public  Book? GetBookById(int Id)
+    public async Task<Book?> GetBookById(int Id)
     {
-
         using var connection = new SqlConnection(ConnectionString);
-        var book = connection.QueryFirstOrDefault<Book>(
+        var book = connection.QueryFirstOrDefaultAsync<Book>(
             sql: "select top 1 * from Books where Id = @Id",
             param: new { Id = Id });
-        return book;
+        return await book;
     }
 
 
-    public  int PostBook(Book newbook)
+    public async Task<int> Create(Book newbook)
     {
         using var connection = new SqlConnection(ConnectionString);
-        var count =  connection.Execute(
+        var count =  connection.ExecuteAsync(
             @"insert into Books (Name, Author,Price) 
         values(@Name, @Author,@Price)",
             param: new
@@ -46,14 +45,13 @@ public class BooksRepository : IRepository
                 newbook.Author,
                 newbook.Price,
             });
-        return count;
+        return await count;
     }
 
-    public  int DeleteBook(int id)
+    public  async Task<int> DeleteBook(int id)
     {
-
         using var connection = new SqlConnection(ConnectionString);
-        var deletedRowsCount =  connection.Execute(
+        var deletedRowsCount =  connection.ExecuteAsync(
             @"delete Books
         where Id = @Id",
             param: new
@@ -61,8 +59,7 @@ public class BooksRepository : IRepository
                 Id = id,
             });
 
-        return deletedRowsCount;
+        return await deletedRowsCount;
     }
-
 }
 
