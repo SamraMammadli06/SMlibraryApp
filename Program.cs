@@ -1,19 +1,60 @@
 using SMlibraryApp.Repository.Base;
 using SMlibraryApp.Repository;
+using SMlibraryApp.Middlewares;
+using SMlibraryApp.Services.Base;
+using SMlibraryApp.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IRepository>(provider => {
+
+builder.Services.AddDataProtection();
+
+builder.Services.AddSingleton<IIdentityService, IdentityService>();
+
+builder.Services.AddScoped<IBookRepository>(provider =>
+{
     const string connectionStringName = "LibraryDb";
     string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
-    if(string.IsNullOrWhiteSpace(connectionString)) {
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
         throw new Exception($"{connectionStringName} not found");
     }
-    
-    return new BooksRepository(connectionString);
-});;
 
+    return new BooksRepository(connectionString);
+});
+
+builder.Services.AddScoped<ILogRepository>(provider =>
+{
+    const string connectionStringName = "LibraryDb";
+    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new Exception($"{connectionStringName} not found");
+    }
+
+    return new LogRepository(connectionString);
+});
+
+builder.Services.AddScoped<IUserRepository>(provider =>
+{
+    const string connectionStringName = "LibraryDb";
+    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new Exception($"{connectionStringName} not found");
+    }
+
+    return new UserRepository(connectionString);
+});
+
+builder.Services.AddTransient<ILogService>(provider =>
+{
+    bool IsLogEnabled = builder.Configuration.GetSection("IsLogEnabled").Get<bool>();
+    return new LogService(IsLogEnabled);
+});
+
+builder.Services.AddTransient<LoggingMiddleware>();
 
 var app = builder.Build();
 
@@ -30,10 +71,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
-
+app.UseMiddleware<LoggingMiddleware>();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Books}/{action=Get}");
+    pattern: "{controller=Identity}/{action=Login}");
 
 app.Run();
