@@ -74,6 +74,6 @@ app.UseRouting();
 app.UseMiddleware<LoggingMiddleware>();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Identity}/{action=Login}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();

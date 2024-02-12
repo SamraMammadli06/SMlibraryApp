@@ -20,7 +20,7 @@ public class UserRepository : IUserRepository
     public async Task<int> Create(User newuser)
     {
         using var connection = new SqlConnection(ConnectionString);
-        var count = connection.ExecuteAsync(@"insert into Users (Email, Password,UserName) 
+        var count = await connection.ExecuteAsync(@"insert into Users (Email, Password,UserName) 
             values(@Email, @Password,@UserName)",
             param: new
             {
@@ -28,26 +28,26 @@ public class UserRepository : IUserRepository
                 newuser.Password,
                 newuser.UserName,
             });
-        return await count;
+        return count;
     }
 
     public async Task<IEnumerable<User>> Get()
     {
         using var connection = new SqlConnection(ConnectionString);
-        var users = connection.QueryAsync<User>("select * from Users");
-        return await users;
+        var users = await connection.QueryAsync<User>("select * from Users");
+        return users;
     }
 
     public async Task<User?> FindUser(User user)
     {
         using var connection = new SqlConnection(ConnectionString);
-        var u = connection.QueryFirstOrDefaultAsync<User>(@"select * from Users
+        var u = await connection.QueryFirstOrDefaultAsync<User>(@"select * from Users
             where UserName = @UserName and Password = @Password",
             param: new
             {
                 user.UserName,
                 user.Password,
             });
-        return await u;
+        return u;
     }
 }

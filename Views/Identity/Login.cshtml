@@ -2,16 +2,40 @@
     string UserName = string.Empty;
     string Password = string.Empty;
 }
+<link rel="stylesheet" href="~/css/style.css" type="text/css" />
 
-<h1>@ViewData["Title"]</h1>
-
-<form method="post" asp-action="Login">
-    <label asp-for="@UserName">UserName</label>
-    <input type="text" asp-for="@UserName">
-    <br>
-    <label asp-for="@Password">Password</label>
-    <input type="password" asp-for="@Password">
-    <br>
-    <input type="submit" value = 'Login'>
-    <input onclick="location.href='@Url.Action("Register", "Identity")'" type="button"  value = 'Create new user'>
-</form>
+<body>
+    <div class="wrapper">
+       <div class="title-text">
+          <div class="title login">
+             Account 
+          </div>
+       </div>
+       <div class="form-container">
+          <div class="slide-controls">
+             <input type="radio" name="slide" id="login" checked>
+             <input type="radio" onclick="location.href='@Url.Action("Register", "Identity")'" name="slide" id="signup">
+             <label for="login" class="slide login">Login</label>
+             <label for="signup" class="slide signup">SignUp</label>
+             <div class="slider-tab"></div>
+          </div>
+          <div class="form-inner">
+             <form method="post" asp-action="Login" class="login">
+                <div class="field">
+                   <input type="text" placeholder="UserName" required>
+                </div>
+                <div class="field">
+                   <input type="password" placeholder="Password" required>
+                </div>
+                <div class="field btn">
+                   <div class="btn-layer"></div>
+                   <input type="submit" value="Login">
+                </div>
+                <div class="signup-link">
+                   Don't Have Account? <a onclick="location.href='@Url.Action("Register", "Identity")'" type="button">Create a new user</a>
+                </div>
+             </form>
+          </div>
+       </div>
+    </div>
+</body>

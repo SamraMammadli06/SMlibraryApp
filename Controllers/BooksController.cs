@@ -47,6 +47,12 @@ public class BooksController : Controller
         return View(book);
     }
 
+
+    [HttpGet]
+    public  async Task<IActionResult> Create()
+    {
+        return View();
+    }
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] Book newbook)
     {
@@ -61,7 +67,7 @@ public class BooksController : Controller
         {
             return BadRequest();
         }
-        return View();
+        return  RedirectToAction("Get","Books");;
     }
 
     [HttpDelete]
