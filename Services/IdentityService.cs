@@ -12,25 +12,14 @@ public class IdentityService : IIdentityService
         this.dataProtector = dataProtectionProvider.CreateProtector("Key");
     }
 
-    public IActionResult GetUserId(ref long userId, HttpContext httpContext)
+    public bool IUserExsists(HttpContext httpContext)
     {
         var authorizeCookie = httpContext.Request.Cookies["Authorize"];
 
         if (string.IsNullOrWhiteSpace(authorizeCookie))
         {
-            return new UnauthorizedResult();
+            return false;
         }
-
-        string? userHashValue = null;
-        try
-        {
-            userHashValue = this.dataProtector.Unprotect(authorizeCookie);
-        }
-        catch (Exception ex)
-        {
-            return new BadRequestResult();
-        }
-
-        return new OkResult();
+        return true;
     }
 }

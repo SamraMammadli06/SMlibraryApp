@@ -7,5 +7,5 @@ using Microsoft.AspNetCore.Mvc;
 namespace SMlibraryApp.Services.Base;
 public interface IIdentityService
 {
-    public IActionResult GetUserId(ref long userId, HttpContext httpContext);
+    public bool IUserExsists(HttpContext httpContext);
 }

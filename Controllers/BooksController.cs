@@ -19,11 +19,10 @@ public class BooksController : Controller
     [Route("Get/")]
     public async Task<IActionResult> Get()
     {
-        long userId = 0;
-        var actionResult = this.Identity.GetUserId(ref userId, base.HttpContext);
-        if (actionResult is not OkResult)
+        var isUserExists = this.Identity.IUserExsists(base.HttpContext);
+        if (!isUserExists)
         {
-            return actionResult;
+            return base.Unauthorized();
         }
         var books = await repository.GetBooks();
         return View(books);
@@ -33,11 +32,10 @@ public class BooksController : Controller
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        long userId = 0;
-        var actionResult = this.Identity.GetUserId(ref userId, base.HttpContext);
-        if (actionResult is not OkResult)
+        var isUserExists = this.Identity.IUserExsists(base.HttpContext);
+        if (!isUserExists)
         {
-            return actionResult;
+            return base.Unauthorized();
         }
         var book = await repository.GetBookById(id);
         if (book is null)
@@ -49,35 +47,33 @@ public class BooksController : Controller
 
 
     [HttpGet]
-    public  async Task<IActionResult> Create()
+    public async Task<IActionResult> Create()
     {
         return View();
     }
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] Book newbook)
     {
-        long userId = 0;
-        var actionResult = this.Identity.GetUserId(ref userId, base.HttpContext);
-        if (actionResult is not OkResult)
+        var isUserExists = this.Identity.IUserExsists(base.HttpContext);
+        if (!isUserExists)
         {
-            return actionResult;
+            return base.Unauthorized();
         }
         var count = await repository.Create(newbook);
         if (count == 0)
         {
             return BadRequest();
         }
-        return  RedirectToAction("Get","Books");;
+        return RedirectToAction("Get", "Books"); ;
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
-        long userId = 0;
-        var actionResult = this.Identity.GetUserId(ref userId, base.HttpContext);
-        if (actionResult is not OkResult)
+        var isUserExists = this.Identity.IUserExsists(base.HttpContext);
+        if (!isUserExists)
         {
-            return actionResult;
+            return base.Unauthorized();
         }
         var count = await repository.DeleteBook(id);
         if (count == 0)
