@@ -6,6 +6,9 @@
   font-family: 'Raleway', sans-serif;
 }
 
+.logbody{
+  margin: 20px;padding: 20px 400px 0px 400px;
+}
 
 .wrapper {
   overflow: hidden;
