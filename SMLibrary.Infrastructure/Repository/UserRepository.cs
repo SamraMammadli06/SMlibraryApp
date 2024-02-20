@@ -26,7 +26,7 @@ public class UserRepository : IUserRepository
         return count;
     }
 
-    public async Task<IEnumerable<User>> Get()
+    public async Task<IEnumerable<User>> GetUsers()
     {
         using var connection = new SqlConnection(ConnectionString);
         var users = await connection.QueryAsync<User>("select * from Users");
