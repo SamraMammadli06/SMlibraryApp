@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SMLibrary.Core.Repository;
+using SMLibrary.Infrastructure.Repository;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Core.Services;
 using SMlibraryApp.Infrastructure.Repository;
@@ -29,6 +31,19 @@ builder.Services.AddScoped<IBookRepository>(provider =>
 
     return new BooksRepository(connectionString);
 });
+
+builder.Services.AddScoped<IUserBooksRepository>(provider =>
+{
+    const string connectionStringName = "LibraryDb";
+    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        throw new Exception($"{connectionStringName} not found");
+    }
+
+    return new UserBooksRepository(connectionString);
+});
+
 
 builder.Services.AddScoped<ILogRepository>(provider =>
 {
