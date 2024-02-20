@@ -14,6 +14,7 @@ create table Users(
     [UserName] nvarchar(50) not null,
     [Email] nvarchar(50) not null,
     [Password] nvarchar(20) not null,
+    [BookId] int foreign key  on delete cascade
 )
 
 create table Loggings(

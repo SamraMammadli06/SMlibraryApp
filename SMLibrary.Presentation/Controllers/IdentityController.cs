@@ -1,4 +1,7 @@
-using Microsoft.AspNetCore.DataProtection;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
@@ -7,27 +10,30 @@ using SMlibraryApp.Presentation.Dtos;
 namespace SMlibraryApp.Presentation.Controllers;
 public class IdentityController : Controller
 {
-    private readonly IDataProtector dataProtector;
     private readonly IUserRepository userRepository;
 
-    public IdentityController(IUserRepository userRepository, IDataProtectionProvider dataProtectionProvider)
+    public IdentityController(IUserRepository userRepository)
     {
-        this.dataProtector = dataProtectionProvider.CreateProtector("Key");
         this.userRepository = userRepository;
     }
     [HttpGet]
-    public async Task<IActionResult> Login()
+    [AllowAnonymous]
+    public async Task<IActionResult> Login(string? returnUrl)
     {
+        base.ViewData["returnUrl"] = returnUrl;
+
         return base.View();
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> Register()
     {
         return base.View();
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromForm] LoginDto loginDto)
     {
         var user = await userRepository.FindUser(new User()
@@ -37,12 +43,26 @@ public class IdentityController : Controller
         });
         if (user is null)
             return base.BadRequest("Incorrect user information");
+        var claims = new Claim[] {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
-        var userHash = this.dataProtector.Protect(user.Id.ToString());
-        base.HttpContext.Response.Cookies.Append("Authorize", userHash);
-        return RedirectToAction("Get", "Books");
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        await base.HttpContext.SignInAsync(
+            scheme: CookieAuthenticationDefaults.AuthenticationScheme,
+            principal: new ClaimsPrincipal(claimsIdentity)
+        );
+
+        if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl))
+            return base.RedirectToAction(controllerName: "Books", actionName: "Get");
+
+        return base.RedirectPermanent(loginDto.ReturnUrl);
     }
 
+    [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromForm] RegisterDto registerDto)
     {
         var count = await userRepository.Create(new User()
@@ -51,6 +71,14 @@ public class IdentityController : Controller
             Email = registerDto.Email,
             Password = registerDto.Password,
         });
+        return RedirectToAction("Login");
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> LogOut()
+    {
+        await base.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login");
     }
 }

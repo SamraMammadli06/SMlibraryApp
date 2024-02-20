@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    bool isAuth = base.User.Identity.IsAuthenticated;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -20,6 +24,11 @@
             <div class="navbar-nav">
                 <a class="nav-item nav-link active" asp-controller="Home" asp-action="Index">Home</a>
                 <a class="nav-item nav-link" asp-action="Login" asp-controller="Identity">SingIn/SingUp</a>
+                @if (isAuth)
+                {
+                    <a class="nav-item nav-link" asp-controller="Books" asp-action="Get">Books</a>
+                    <a class="nav-item nav-link" asp-controller="Identity" asp-action="LogOut">Log Out</a>
+                }
             </div>
         </div>
     </nav>

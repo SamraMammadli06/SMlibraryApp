@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
 namespace SMlibraryApp.Presentation.Controllers;
 
+[Authorize]
 public class BooksController : Controller
 {
     private readonly IBookRepository repository;
@@ -12,7 +14,7 @@ public class BooksController : Controller
     }
 
     [HttpGet]
-    [Route("Get/")]
+    [Route("/[controller]")]
     public async Task<IActionResult> Get()
     {
         var books = await repository.GetBooks();

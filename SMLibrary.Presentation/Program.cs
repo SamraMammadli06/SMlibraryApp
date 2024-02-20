@@ -1,5 +1,4 @@
-
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Core.Services;
 using SMlibraryApp.Infrastructure.Repository;
@@ -11,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDataProtection();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Identity/Login";
+        options.ReturnUrlParameter = "returnUrl";
+    });
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IBookRepository>(provider =>
 {
@@ -69,8 +74,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseMiddleware<LoggingMiddleware>();
 app.MapControllerRoute(
