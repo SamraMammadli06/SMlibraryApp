@@ -42,6 +42,7 @@ public class UserController : Controller
             Email = User.FindFirst(ClaimTypes.Email).Value,
             UserName = User.FindFirst(ClaimTypes.Name).Value,
         };
+        user = await userBooksRepository.FindUserByEmailandName(user);
         await userBooksRepository.AddBookToUser(id, user);
         return RedirectToAction("Get","Books");
     }

@@ -5,5 +5,6 @@ namespace SMLibrary.Core.Repository;
 public interface IUserBooksRepository
 {
     public Task<IEnumerable<Book>> GetBooksbyUser(string UserName,string Email);
+    public Task<User> FindUserByEmailandName(User user);
     public Task AddBookToUser(int id, User user);
 }

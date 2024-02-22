@@ -25,7 +25,7 @@ public class UserBooksRepository : IUserBooksRepository
                     });
         return users;
     }
-    private async Task<User> FindPassword(User user)
+    public async Task<User> FindUserByEmailandName(User user)
     {
         using var connection = new SqlConnection(ConnectionString);
         var u = await connection.QueryFirstOrDefaultAsync<User>(@"select * from Users
@@ -40,15 +40,14 @@ public class UserBooksRepository : IUserBooksRepository
     public async Task AddBookToUser(int id, User user)
     {
         using var connection = new SqlConnection(ConnectionString);
-        var newUser = await this.FindPassword(user);
         var count = await connection.ExecuteAsync(@"insert into Users (Email, Password,UserName,BookId) 
             values(@Email, @Password,@UserName,@BookId)",
             param: new
             {
                 BookId = id,
-                Email = newUser.Email,
-                Password = newUser.Password,
-                UserName = newUser.UserName
+                Email = user.Email,
+                Password = user.Password,
+                UserName = user.UserName
             });
     }
 }
