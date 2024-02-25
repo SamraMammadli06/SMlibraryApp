@@ -1,10 +1,9 @@
 using System.Security.Claims;
 using SMlibraryApp.Core.Models;
 
-namespace SMLibrary.Core.Repository;
+namespace SMLibraryApp.Core.Repository;
 public interface IUserBooksRepository
 {
-    public Task<IEnumerable<Book>> GetBooksbyUser(string UserName,string Email);
-    public Task<User> FindUserByEmailandName(User user);
-    public Task AddBookToUser(int id, User user);
+    public Task<IEnumerable<Book>> GetBooksbyUser(string UserName);
+    public Task AddBookToUser(int id, string UserName);
 }

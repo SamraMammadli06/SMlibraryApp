@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SMLibrary.Core.Repository;
 using SMLibrary.Infrastructure.Repository;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Core.Services;
@@ -10,6 +9,7 @@ using SMlibraryApp.Infrastructure.Services;
 using SMlibraryApp.Infrastructure.Data;
 using SMlibraryApp.Presentation.Middlewares;
 using System.Reflection;
+using SMLibraryApp.Core.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);

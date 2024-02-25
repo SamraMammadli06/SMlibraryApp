@@ -1,3 +1,5 @@
+using SMLibraryApp.Core.Models;
+
 namespace SMlibraryApp.Core.Models;
 
 public class Book
@@ -6,4 +8,5 @@ public class Book
     public string Name { get; set; }
     public string Author { get; set; }
     public double? Price { get; set; }
+    public IEnumerable<BookUserName> UserNames  = new List<BookUserName>();
 }
