@@ -1,48 +1,36 @@
 using System.Data.SqlClient;
 using Dapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
+using SMlibraryApp.Infrastructure.Data;
 
 namespace SMlibraryApp.Infrastructure.Repository;
 public class UserRepository : IUserRepository
 {
-    private readonly string ConnectionString;
-    public UserRepository(string ConnectionString)
+    private readonly MyDbContext dbContext;
+    private readonly UserManager<IdentityUser> userManager;
+
+    public UserRepository(MyDbContext dbContext, UserManager<IdentityUser> userManager)
     {
-        this.ConnectionString = ConnectionString;
+        this.userManager = userManager;
+        this.dbContext = dbContext;
     }
 
-    public async Task<int> Create(User newuser)
+    public async Task Create(IdentityUser newuser)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var count = await connection.ExecuteAsync(@"insert into Users (Email, Password,UserName) 
-            values(@Email, @Password,@UserName)",
-            param: new
-            {
-                newuser.Email,
-                newuser.Password,
-                newuser.UserName,
-            });
-        return count;
+         await this.dbContext.Users.AddAsync(newuser);
     }
 
-    public async Task<IEnumerable<User>> GetUsers()
+    public async Task<IdentityUser?> FindUser(User user)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var users = await connection.QueryAsync<User>("select * from Users");
-        return users;
+        var newUser = await this.dbContext.Users.FirstOrDefaultAsync(u => user.Id.ToString() == u.Id);
+        return newUser;
     }
 
-    public async Task<User?> FindUser(User user)
+    public IEnumerable<IdentityUser> GetUsers()
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var u = await connection.QueryFirstOrDefaultAsync<User>(@"select * from Users
-            where UserName = @UserName and Password = @Password",
-            param: new
-            {
-                user.UserName,
-                user.Password,
-            });
-        return u;
+        return this.dbContext.Users.AsEnumerable();
     }
 }

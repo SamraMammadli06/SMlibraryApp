@@ -2,24 +2,21 @@ using System.Data.SqlClient;
 using Dapper;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
+using SMlibraryApp.Infrastructure.Data;
 
 namespace SMlibraryApp.Infrastructure.Repository;
 public class LogRepository : ILogRepository
 {
-    private readonly string ConnectionString;
-    public LogRepository(string connection)
+    private readonly MyDbContext dbContext;
+
+    public LogRepository(MyDbContext dbContext)
     {
-        this.ConnectionString = connection;
+        this.dbContext = dbContext;
     }
 
-    public async Task<int> CreateLog(Log log)
+    public async Task CreateLog(Log log)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var count = await connection.ExecuteAsync(@"insert into Loggings([userId],[url],
-            [methodType],[statusCode],[requestBody],[responseBody])
-            values(@userId,@url,
-            @methodType,@statusCode,@requestBody,@responseBody)",
-            param: log);
-        return count;
+        await this.dbContext.Logs.AddAsync(log);
+        await this.dbContext.SaveChangesAsync();
     }
 }

@@ -73,7 +73,7 @@ public class LoggingMiddleware : IMiddleware
             var responseBody = await this.GetResponseBody(context, next);
             var userId = await this.GetUserId(context);
 
-            var count = await Repository.CreateLog(new Log()
+            await Repository.CreateLog(new Log()
             {
                 userId = userId,
                 url = context.Request.GetDisplayUrl(),

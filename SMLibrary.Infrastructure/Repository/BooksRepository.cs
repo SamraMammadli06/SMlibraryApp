@@ -1,59 +1,45 @@
 using System.Data.SqlClient;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
+using SMlibraryApp.Infrastructure.Data;
 namespace SMlibraryApp.Infrastructure.Repository;
 
 public class BooksRepository : IBookRepository
 {
-    private readonly string ConnectionString;
-    public BooksRepository(string connection)
+    private readonly MyDbContext dbContext;
+
+    public BooksRepository(MyDbContext dbContext)
     {
-        this.ConnectionString = connection;
-    }
-    public async Task<IEnumerable<Book>> GetBooks()
-    {
-        using var connection = new SqlConnection(ConnectionString);
-        var books = await connection.QueryAsync<Book>("select * from Books");
-        return books;
+        this.dbContext = dbContext;
     }
 
-    public async Task<Book?> GetBookById(int Id)
+    public async Task Create(Book newbook)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var book = await connection.QueryFirstOrDefaultAsync<Book>(
-            sql: "select top 1 * from Books where Id = @Id",
-            param: new { Id = Id });
+        await this.dbContext.Books.AddAsync(newbook);
+        await this.dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteBook(int id)
+    {
+        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
+        
+        this.dbContext.Remove<Book>(book);
+
+        await this.dbContext.SaveChangesAsync();
+    }
+
+    public async Task<Book?> GetBookById(int id)
+    {
+        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
         return book;
     }
 
-    public async Task<int> Create(Book newbook)
+    public async Task<IEnumerable<Book>> GetBooks()
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var count = await connection.ExecuteAsync(
-            @"insert into Books (Name, Author,Price) 
-        values(@Name, @Author,@Price)",
-            param: new
-            {
-                newbook.Name,
-                newbook.Author,
-                newbook.Price,
-            });
-        return count;
-    }
-
-    public async Task<int> DeleteBook(int id)
-    {
-        using var connection = new SqlConnection(ConnectionString);
-        var deletedRowsCount = await connection.ExecuteAsync(
-            @"delete Books
-        where Id = @Id",
-            param: new
-            {
-                Id = id,
-            });
-
-        return deletedRowsCount;
+        var books =  this.dbContext.Books.AsEnumerable<Book>();
+        return books;
     }
 }
 

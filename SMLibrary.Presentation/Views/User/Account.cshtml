@@ -6,16 +6,7 @@
 }
 
 <div class="text-center">
-    Account:
-    @foreach (var claim in Model)
-    {
-        <div>
-            @{
-                pos = claim.Type.LastIndexOf('/')+1;
-            }
-            <label>@claim.Type.Substring(pos, claim.Type.Length - pos).ToUpper():</label>
-            <label>@claim.Value</label>
-        </div>
-    }
+    <h1>Account:</h1>
+    <div>Name: @User.Identity.Name</div>
     <a type="button" asp-action="GetUserItems">MyBooks</a>
 </div>

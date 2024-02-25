@@ -42,22 +42,14 @@ public class BooksController : Controller
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] Book newbook)
     {
-        var count = await repository.Create(newbook);
-        if (count == 0)
-        {
-            return BadRequest();
-        }
+        await repository.Create(newbook);
         return RedirectToAction("Get", "Books"); ;
     }
 
     [HttpDelete]
     public async Task<IActionResult> Delete(int id)
     {
-        var count = await repository.DeleteBook(id);
-        if (count == 0)
-        {
-            return NotFound();
-        }
+        await repository.DeleteBook(id);
         return Ok();
     }
 }

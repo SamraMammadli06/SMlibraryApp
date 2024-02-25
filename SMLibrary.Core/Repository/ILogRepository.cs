@@ -4,6 +4,6 @@ namespace SMlibraryApp.Core.Repository
 {
     public interface ILogRepository
     {
-        public  Task<int> CreateLog(Log log);
+        public  Task CreateLog(Log log);
     }
 }

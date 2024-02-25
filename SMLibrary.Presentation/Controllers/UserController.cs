@@ -1,11 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using SMLibrary.Core.Repository;
 using SMlibraryApp.Core.Models;
-using SMlibraryApp.Core.Repository;
-using SMlibraryApp.Presentation.Dtos;
 
 namespace SMLibrary.Presentation.Controllers;
 [Authorize]
@@ -28,8 +25,7 @@ public class UserController : Controller
     [HttpGet]
     public async Task<IActionResult> Account()
     {
-        var claims = base.User.Claims;
-        return base.View(claims);
+        return base.View();
     }
 
 

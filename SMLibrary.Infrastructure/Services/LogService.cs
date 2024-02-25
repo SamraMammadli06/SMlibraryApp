@@ -10,6 +10,6 @@ public class LogService : ILogService
     }
     public bool IsLogEnabled()
     {
-        return  this.isEnabled;
+        return this.isEnabled;
     }
 }
