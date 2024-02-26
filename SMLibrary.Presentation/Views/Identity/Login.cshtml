@@ -34,6 +34,10 @@
                      <input type="submit" value="Login">
                   </div>
                   <div class="signup-link">
+                     Forget Password? <a onclick="location.href='@Url.Action("ChangePassword", "Identity")'"
+                        type="button">Change Password</a>
+                  </div>
+                  <div class="signup-link">
                      Don't Have Account? <a onclick="location.href='@Url.Action("Register", "Identity")'"
                         type="button">Create a new user</a>
                   </div>

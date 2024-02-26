@@ -6,5 +6,5 @@ public interface IUserRepository
 {
     public IEnumerable<IdentityUser> GetUsers();
     public Task Create(IdentityUser newuser);
-    public Task<IdentityUser?> FindUser(User user);
+    public Task<IdentityUser?> FindUser(string UserName);
 }

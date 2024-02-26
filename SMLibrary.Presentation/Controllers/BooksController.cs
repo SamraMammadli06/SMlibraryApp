@@ -4,7 +4,6 @@ using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
 namespace SMlibraryApp.Presentation.Controllers;
 
-[Authorize]
 public class BooksController : Controller
 {
     private readonly IBookRepository repository;
@@ -22,6 +21,8 @@ public class BooksController : Controller
     }
 
     [HttpGet]
+
+    [Authorize]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -35,11 +36,13 @@ public class BooksController : Controller
 
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Create()
     {
         return View();
     }
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromForm] Book newbook)
     {
         await repository.Create(newbook);
@@ -47,6 +50,7 @@ public class BooksController : Controller
     }
 
     [HttpDelete]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         await repository.DeleteBook(id);

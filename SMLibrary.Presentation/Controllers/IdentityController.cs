@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SMLibrary.Presentation.Dtos;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Presentation.Dtos;
 
@@ -70,5 +71,28 @@ public class IdentityController : Controller
     {
         await this.signInManager.SignOutAsync();
         return base.RedirectToAction(actionName: "Index", controllerName: "Home");
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChangePassword([FromForm] PassChangeDto changeDto)
+    {
+        var user = await userRepository.FindUser(changeDto.Username);
+        if(user is null){
+            return BadRequest("Incorrect username");
+        }
+        var check = await UserManager.CheckPasswordAsync(user,changeDto.oldPassword);
+        if(check is false){
+            return base.BadRequest("Incorrect password");
+        }
+        var newUser = await UserManager.ChangePasswordAsync(user,changeDto.oldPassword,changeDto.newPassword);
+        return RedirectToAction("Login");
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChangePassword()
+    {
+        return base.View();
     }
 }

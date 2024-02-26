@@ -1,4 +1,11 @@
-<a asp-action="Create" asp-controller="Books">Create Book</a>
+@{
+  bool IsAuth = base.User.Identity.IsAuthenticated;
+}
+
+@if (IsAuth)
+{
+  <a asp-action="Create" asp-controller="Books">Create Book</a>
+}
 
 <div class="card" style="width: 18rem;">
   <ul class="border border-dark-subtle" class="list-group list-group-flush">
@@ -10,8 +17,11 @@
           <div>Name: @item.Name</div>
           <div>Author: @item.Author</div>
           <div>Price: @item.Price</div>
-          <button type="button" onclick="submitDeleteForm('@item.Id')">Delete</button>
-          <button asp-controller="User" asp-action="AddBookToUser" asp-route-id = "@item.Id">Add book</button>
+          @if (IsAuth)
+          {
+            <button type="button" onclick="submitDeleteForm('@item.Id')">Delete</button>
+            <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id">Add book</button>
+          }
         </form>
       </li>
     }

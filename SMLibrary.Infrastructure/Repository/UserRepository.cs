@@ -23,9 +23,9 @@ public class UserRepository : IUserRepository
          await this.dbContext.Users.AddAsync(newuser);
     }
 
-    public async Task<IdentityUser?> FindUser(User user)
+    public async Task<IdentityUser?> FindUser(string UserName)
     {
-        var newUser = await this.dbContext.Users.FirstOrDefaultAsync(u => user.Id.ToString() == u.Id);
+        var newUser = await this.dbContext.Users.FirstOrDefaultAsync(u => UserName== u.UserName);
         return newUser;
     }
 
