@@ -13,10 +13,13 @@ public class IdentityController : Controller
     private readonly IUserRepository userRepository;
     private readonly UserManager<IdentityUser> UserManager;
     private readonly SignInManager<IdentityUser> signInManager;
-
-    public IdentityController(IUserRepository userRepository, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    private readonly RoleManager<IdentityRole> roleManager;
+    public IdentityController(IUserRepository userRepository, 
+    UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+    RoleManager<IdentityRole> roleManager)
     {
         this.signInManager = signInManager;
+        this.roleManager = roleManager;
         this.UserManager = userManager;
         this.userRepository = userRepository;
     }
@@ -61,7 +64,13 @@ public class IdentityController : Controller
         {
             return BadRequest(result);
         }
-        System.Console.WriteLine(result);
+         if(registerDto.UserName.Contains("admin")) {
+            var role = new IdentityRole {Name = "Admin"};
+            await roleManager.CreateAsync(role);
+
+            await UserManager.AddToRoleAsync(newUser, role.Name);
+        }
+
         return RedirectToAction("Login");
     }
 
@@ -94,5 +103,13 @@ public class IdentityController : Controller
     public async Task<IActionResult> ChangePassword()
     {
         return base.View();
+    }
+    [HttpGet]
+    [Authorize(Roles = "Admin")]
+    [Route("[action]")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users =  userRepository.GetUsers();
+        return base.View(users);
     }
 }

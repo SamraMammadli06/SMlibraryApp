@@ -1,5 +1,6 @@
 ﻿@{
     bool isAuth = base.User.Identity.IsAuthenticated;
+    bool IsAdmin = User.IsInRole("Admin");
 }
 
 <!DOCTYPE html>
@@ -23,8 +24,14 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav">
                 <a class="nav-item nav-link active" asp-controller="Home" asp-action="Index">Home</a>
-                <a class="nav-item nav-link" asp-action="Login" asp-controller="Identity">SingIn/SingUp</a>
+                @if (!isAuth)
+                {
+                    <a class="nav-item nav-link" asp-action="Login" asp-controller="Identity">SingIn/SingUp</a>
+                }
                 <a class="nav-item nav-link" asp-controller="Books" asp-action="Get">Books</a>
+                @if(IsAdmin){
+                    <a class="nav-item nav-link" asp-controller="Identity" asp-action="GetUsers">Users</a>
+                }
                 @if (isAuth)
                 {
                     <a class="nav-item nav-link" asp-controller="User" asp-action="Account">Account</a>

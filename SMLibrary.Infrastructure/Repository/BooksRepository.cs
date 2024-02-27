@@ -41,7 +41,13 @@ public class BooksRepository : IBookRepository
         var books = this.dbContext.Books.AsEnumerable<Book>();
         return books;
     }
-    
+
+    public async Task ChangeBook(int id,Book newbook)
+    {
+        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
+        book=newbook;
+        await this.dbContext.SaveChangesAsync();
+    }
     
 }
 

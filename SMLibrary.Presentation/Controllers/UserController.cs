@@ -1,15 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SMLibrary.Presentation.Dtos;
-using SMLibraryApp.Core.Repository;
+using SMlibraryApp.Core.Repository;
 
 namespace SMLibrary.Presentation.Controllers;
 
 
 public class UserController : Controller
 {
-    private readonly IUserBooksRepository userBooksRepository;
-    public UserController(IUserBooksRepository userBooksRepository)
+    private readonly IUserRepository userBooksRepository;
+    public UserController(IUserRepository userBooksRepository)
     {
         this.userBooksRepository = userBooksRepository;
     }
@@ -22,6 +21,7 @@ public class UserController : Controller
         var books = await userBooksRepository.GetBooksbyUser(userLogin);
         return base.View(books);
     }
+
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> Account()
@@ -29,13 +29,6 @@ public class UserController : Controller
         return base.View();
     }
 
-    [HttpGet]
-    // [Authorize(Roles = "admin")]
-    [Route("[controller]")]
-    public async Task<IActionResult> GetUsers()
-    {
-        return base.View();
-    }
 
     [HttpPost]
     [Authorize]
