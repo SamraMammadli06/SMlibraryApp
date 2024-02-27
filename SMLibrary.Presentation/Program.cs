@@ -16,12 +16,12 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDataProtection();
 
-    
+
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IUserRepository,UserRepository>();
-builder.Services.AddScoped<IBookRepository,BooksRepository>();
-builder.Services.AddScoped<ILogRepository,LogRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBookRepository, BooksRepository>();
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 
 builder.Services.AddTransient<ILogService>(provider =>
 {
@@ -43,6 +43,10 @@ builder.Services.AddDbContext<MyDbContext>(dbContextOptionsBuilder =>
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = true;
 })
     .AddEntityFrameworkStores<MyDbContext>();
 

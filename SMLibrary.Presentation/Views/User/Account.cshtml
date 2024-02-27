@@ -12,9 +12,11 @@
                     <h5 class="card-title">Welcome</h5>
                     <p class="card-text">Account Information:</p>
                     <p class="card-text">Name: @User.Identity.Name</p>
+                    <p class="card-text">Balance: @Model $</p>
                     @if(!IsAdmin){
                         <a href="@Url.Action("GetUserItems", "User")" class="btn btn-primary mt-3">My Books</a>
                     }
+                     <a href="@Url.Action("AddBalance", "User")" class="btn btn-primary mt-3">Increase Balance</a>
                 </div>
             </div>
         </div>

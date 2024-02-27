@@ -35,18 +35,18 @@ public class BooksRepository : IBookRepository
         var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
         return book;
     }
-
+    public async Task BuyBook(int id,string UserName)
+    {
+        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
+        var userBook = await dbContext.UserBalances
+          .FirstOrDefaultAsync(b => b.UserName == UserName);
+        userBook.Balance -= (double)book.Price;
+        await dbContext.SaveChangesAsync();
+    }
     public async Task<IEnumerable<Book>> GetBooks()
     {
         var books = this.dbContext.Books.AsEnumerable<Book>();
         return books;
-    }
-
-    public async Task ChangeBook(int id,Book newbook)
-    {
-        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
-        book=newbook;
-        await this.dbContext.SaveChangesAsync();
     }
     
 }

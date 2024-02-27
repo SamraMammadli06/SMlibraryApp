@@ -24,12 +24,16 @@
             @if (IsAuth && !IsAdmin)
             {
               <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id">Add book</button>
-              <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
+              @if(item.Price==0){
+                <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
+              }
+              else{
+                <a href="@Url.Action("BuyBook", "Books", new { id = item.Id })" class="btn btn-secondary">Buy</a>
+              }
             }
             @if (IsAdmin)
             {
               <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
-              <a href="@Url.Action("Change", "Books", new { id = item.Id })" class="btn btn-secondary">Change Book</a>
             }
           </div>
         </div>

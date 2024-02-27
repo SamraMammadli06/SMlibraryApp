@@ -7,5 +7,6 @@ public class BookUserName
     public string UserName { get; set; }
 
     public int BookId { get; set; }
-    public  Book Book { get; set; }
+    public bool IsBuyed { get; set; } = false;
+    public Book Book { get; set; }
 }

@@ -70,7 +70,7 @@ public class IdentityController : Controller
 
             await UserManager.AddToRoleAsync(newUser, role.Name);
         }
-
+        await userRepository.AddBalancetoUser(registerDto.UserName);
         return RedirectToAction("Login");
     }
 

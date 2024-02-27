@@ -2,14 +2,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
+using SMlibraryApp.Infrastructure.Repository;
 namespace SMlibraryApp.Presentation.Controllers;
 
 public class BooksController : Controller
 {
     private readonly IBookRepository repository;
     private readonly IWebHostEnvironment webHostEnvironment;
-    public BooksController(IBookRepository repository, IWebHostEnvironment webHostEnvironment)
+    private readonly IUserRepository UserRepository;
+    public BooksController(IBookRepository repository, IUserRepository userRepository, IWebHostEnvironment webHostEnvironment)
     {
+        this.UserRepository = userRepository;
         this.webHostEnvironment = webHostEnvironment;
         this.repository = repository;
     }
@@ -33,7 +36,23 @@ public class BooksController : Controller
         }
         return View(book);
     }
-
+    [HttpGet]
+    [Authorize]
+    [Route("[controller]/[action]/{id}")]
+    public async Task<IActionResult> BuyBook(int id)
+    {
+        var balance = await UserRepository.GetBalance(User.Identity.Name);
+        var book = await repository.GetBookById(id);
+        if(balance < book.Price){
+            return base.BadRequest("Not enough money");
+        }
+        var check = await UserRepository.AddBookToUser(id,User.Identity.Name);
+        if(check == false){
+            await repository.BuyBook(id, User.Identity.Name);
+        }
+        return RedirectToAction("Get");
+    }
+    
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
@@ -91,14 +110,6 @@ public class BooksController : Controller
         return Ok();
     }
 
-    [HttpGet]
-    [Authorize(Roles = "Admin")]
-    [Route("/[controller]/[action]/{id}")]
-    public async Task<IActionResult> Change(int id)
-    {
-        var book = await repository.GetBookById(id);
-        return base.View(book);
-    }
 
     [HttpGet]
     [Authorize]
@@ -107,14 +118,6 @@ public class BooksController : Controller
     {
         var book = await repository.GetBookById(id);
         return base.View(book);
-    }
-
-    [HttpPut]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Change(int id, [FromForm] Book book)
-    {
-        await repository.ChangeBook(id, book);
-        return RedirectToAction("Get");
     }
 
 }
