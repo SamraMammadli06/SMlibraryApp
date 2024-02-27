@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "PDF Viewer";
+}
+
+<div id="pdf-container">
+    <canvas id="pdf-render"></canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+<script>
+    const pdfUrl = "@Url.Content(Model.Content)";
+    let currentPage = 1;
+    const scale = 1; // Adjust the scale factor for smaller pages
+
+    const renderPage = (pageNum) => {
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdf => {
+            pdf.getPage(pageNum).then(page => {
+                const viewport = page.getViewport({ scale });
+
+                const canvas = document.getElementById('pdf-render');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                const renderContext = {
+                    canvasContext: context,
+                    viewport
+                };
+                page.render(renderContext);
+            });
+        });
+    };
+
+    document.addEventListener('keydown', event => {
+        currentPage += (event.keyCode === 37) ? (currentPage > 1 ? -1 : 0) : (event.keyCode === 39) ? 1 : 0;
+        renderPage(currentPage);
+    });
+
+    renderPage(currentPage);
+</script>
+
+
+<style>
+    #pdf-container {
+        background-color: white;
+        background-image: none;
+        position: relative;
+        height: calc(100vh - 50px);
+        overflow-y: auto;
+    }
+
+    #pdf-render {
+        display: block;
+        width: 100%;
+    }
+
+    #page-navigation {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    #page-navigation button {
+        margin: 5px;
+    }
+</style>
