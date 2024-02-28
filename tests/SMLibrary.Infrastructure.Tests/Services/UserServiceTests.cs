@@ -13,13 +13,6 @@ namespace SMLibrary.Infrastructure.Tests.Services
     public class UserServiceTests
     {
         [Fact]
-        public async Task Delete_CheksIdisLessthan1_ThrowsArgumentException()
-        {
-            var service = new UserService(null);
-
-            await Assert.ThrowsAsync<ArgumentException>(async () => await service.Delete(-1));
-        }
-        [Fact]
         public async Task FindUser_CheksIfNull_ThrowsArgumentNullException()
         {
             var service = new UserService(null);

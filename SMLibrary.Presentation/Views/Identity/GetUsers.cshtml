@@ -2,17 +2,72 @@
 @model IEnumerable<IdentityUser>
 
 <div class="container">
-    <div class="row">
-        @foreach(var user in Model)
+    <div class="grid">
+        @foreach (var user in Model)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <div class="card-body" >
-                        <h5 class="card-title">Name: @user.UserName</h5>
+            @if (!user.UserName.Contains("admin"))
+            {
+                <form id="deleteForm-@user.UserName" asp-controller="User" asp-route-name="@user.UserName" asp-action="Delete">
+                    <div class="card mb-3" style="max-width: 200px;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Name: @user.UserName</h5>
+                            </div>
+                            <button type="button" onclick="submitDeleteForm('@user.UserName')" class="btn btn-danger">Delete</button>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </form>
+            }
         }
     </div>
 </div>
 
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        /* Display in 4 columns */
+        gap: 20px;
+    }
+
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .btn {
+        margin: 10px;
+    }
+</style>
+
+<script>
+    function submitDeleteForm(itemName) {
+        var form = document.getElementById('deleteForm-' + itemName);
+        var formData = new FormData(form);
+        fetch(form.action + '?id=' + itemName, {
+            method: 'DELETE',
+            body: formData
+        })
+            .then(response => {
+                if (response.ok) {
+                    form.remove();
+                } else {
+                    console.error('Error deleting resource');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+</script>

@@ -15,13 +15,22 @@ public class UserController : Controller
         this.service = service;
     }
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     [Route("/[controller]/Books")]
     public async Task<IActionResult> GetUserItems()
     {
         var userLogin = User.Identity.Name;
         var books = await service.GetBooksbyUser(userLogin);
         return base.View(books);
+    }
+
+    [HttpDelete]
+    [Authorize(Roles ="Admin")]
+    [Route("/[controller]/[action]/{name}")]
+    public async Task<IActionResult> Delete(string name)
+    {
+        await service.Delete(name);
+        return base.Ok();
     }
 
     [HttpGet]

@@ -7,52 +7,16 @@ using SMlibraryApp.Infrastructure.Repository;
 using SMlibraryApp.Infrastructure.Services;
 using SMlibraryApp.Infrastructure.Data;
 using SMlibraryApp.Presentation.Middlewares;
-using System.Reflection;
-using SMLibrary.Core.Services;
-using SMLibrary.Infrastructure.Services;
-
+using SMLibrary.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
 builder.Services.AddControllersWithViews();
-
 builder.Services.AddDataProtection();
-
-
 builder.Services.AddAuthorization();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IBookRepository, BooksRepository>();
-builder.Services.AddScoped<ILogRepository, LogRepository>();
-builder.Services.AddScoped<IBookService, BookService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddTransient<ILogService>(provider =>
-{
-    bool IsLogEnabled = builder.Configuration.GetSection("IsLogEnabled").Get<bool>();
-    return new LogService(IsLogEnabled);
-});
-
+builder.Services.ExRepositories();
+builder.Services.ExDbContext(builder.Configuration, System.Reflection.Assembly.GetExecutingAssembly());
+builder.Services.ExServices(builder.Configuration);
 builder.Services.AddTransient<LoggingMiddleware>();
-
-builder.Services.AddDbContext<MyDbContext>(dbContextOptionsBuilder =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("LibraryDb");
-    dbContextOptionsBuilder.UseSqlServer(connectionString, options =>
-    {
-        options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
-    });
-});
-
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-{
-        options.Password.RequireDigit = true;
-        options.Password.RequiredLength = 6;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = true;
-})
-    .AddEntityFrameworkStores<MyDbContext>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

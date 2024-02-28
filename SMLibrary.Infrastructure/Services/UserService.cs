@@ -32,12 +32,9 @@ namespace SMLibrary.Infrastructure.Services
             await userRepository.Create(newuser);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(string name)
         {
-            if(id<1){
-                throw new ArgumentException("Id cant be less than 1");
-            }
-            await userRepository.Delete(id);
+            await userRepository.Delete(name);
         }
 
         public async Task<IdentityUser?> FindUser(string UserName)
@@ -76,9 +73,6 @@ namespace SMLibrary.Infrastructure.Services
         public IEnumerable<IdentityUser> GetUsers()
         {
             var users = userRepository.GetUsers();
-            if(users is null || users.Any()){
-                return Enumerable.Empty<IdentityUser>();
-            }
             return users;
         }
 

@@ -101,9 +101,9 @@ public class UserRepository : IUserRepository
             Console.WriteLine("No user found with the specified ID.");
         }
     }
-    public async Task Delete(int id)
+    public async Task Delete(string name)
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Id == id.ToString());
+        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == name);
         dbContext.Users.Remove(user);
         await dbContext.SaveChangesAsync();
     }
