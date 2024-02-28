@@ -33,7 +33,7 @@ namespace SMLibrary.Infrastructure.Tests.Services
         {
             var service = new UserService(null);
 
-            await Assert.ThrowsAsync<ArgumentException>(async () => await service.Delete(amount));
+            await Assert.ThrowsAsync<ArgumentException>(async () => await service.SetBalance(amount,"name"));
         }
     }
 }

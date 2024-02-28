@@ -15,7 +15,7 @@ public class UserController : Controller
         this.service = service;
     }
     [HttpGet]
-    [Authorize(Roles ="Admin")]
+    [Authorize]
     [Route("/[controller]/Books")]
     public async Task<IActionResult> GetUserItems()
     {

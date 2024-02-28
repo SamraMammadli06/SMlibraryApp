@@ -44,7 +44,6 @@ public class UserRepository : IUserRepository
                 {
                     BookId = id,
                     UserName = UserName,
-                    IsBuyed = true,
                 };
 
                 await dbContext.BookUserNames.AddAsync(bookUserName);

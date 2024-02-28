@@ -64,9 +64,7 @@ namespace SMLibrary.Infrastructure.Services
         public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
         {
             var books = await userRepository.GetBooksbyUser(UserName);
-            if(books is null || books.Any()){
-                return Enumerable.Empty<Book>();
-            }
+           
             return books;
         }
 

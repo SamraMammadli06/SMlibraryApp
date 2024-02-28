@@ -23,9 +23,9 @@
             <p class="card-text">Price: $@item.Price</p>
             @if (IsAuth && !IsAdmin)
             {
-              <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id">Add book</button>
               @if(item.Price==0){
                 <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
+                <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id">Add book</button>
               }
               else{
                 <a href="@Url.Action("BuyBook", "Books", new { id = item.Id })" class="btn btn-secondary">Buy</a>
