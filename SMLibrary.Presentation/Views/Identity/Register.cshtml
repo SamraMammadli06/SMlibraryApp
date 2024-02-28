@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "Register";
+    string UserName = string.Empty;
+    string Password = string.Empty;
+    string Email = string.Empty;
+}
+<link rel="stylesheet" href="~/css/style.css" type="text/css" />
+
+
+<body>
+    <div  class = "logbody">
+        <div class="wrapper">
+            <div class="title-text">
+                <div class="title login">
+                    Account
+                </div>
+            </div>
+            <div class="form-container">
+                <div class="slide-controls">
+                    <input type="radio" onclick="location.href='@Url.Action("Login", "Identity")'" name="slide"
+                        id="login">
+                    <input type="radio" name="slide" id="signup" checked>
+                    <label for="login" class="slide login">Login</label>
+                    <label for="signup" class="slide signup">SignUp</label>
+                    <div class="slider-tab"></div>
+                </div>
+                <div class="form-inner">
+                    <form method="post" asp-action="Register" class="signup">
+                        <div class="field">
+                            <input asp-for="@UserName" type="text" placeholder="Username" required>
+                        </div>
+                        <div class="field">
+                            <input asp-for="@Email" type="email" placeholder="Email" required>
+                        </div>
+                        <div class="field">
+                            <input asp-for="@Password" type="password" placeholder="Password" required>
+                        </div>
+                        <div class="field btn">
+                            <div class="btn-layer"></div>
+                            <input type="submit" value="SignUp">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
