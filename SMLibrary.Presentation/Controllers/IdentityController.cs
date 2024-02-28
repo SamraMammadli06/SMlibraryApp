@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SMLibrary.Core.Services;
 using SMLibrary.Presentation.Dtos;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Presentation.Dtos;
@@ -10,18 +11,18 @@ using SMlibraryApp.Presentation.Dtos;
 namespace SMlibraryApp.Presentation.Controllers;
 public class IdentityController : Controller
 {
-    private readonly IUserRepository userRepository;
+    private readonly IUserService service;
     private readonly UserManager<IdentityUser> UserManager;
     private readonly SignInManager<IdentityUser> signInManager;
     private readonly RoleManager<IdentityRole> roleManager;
-    public IdentityController(IUserRepository userRepository, 
+    public IdentityController(IUserService service, 
     UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
     RoleManager<IdentityRole> roleManager)
     {
         this.signInManager = signInManager;
         this.roleManager = roleManager;
         this.UserManager = userManager;
-        this.userRepository = userRepository;
+        this.service = service;
     }
     [HttpGet]
     [AllowAnonymous]
@@ -70,7 +71,7 @@ public class IdentityController : Controller
 
             await UserManager.AddToRoleAsync(newUser, role.Name);
         }
-        await userRepository.AddBalancetoUser(registerDto.UserName);
+        await service.AddBalancetoUser(registerDto.UserName);
         return RedirectToAction("Login");
     }
 
@@ -86,7 +87,7 @@ public class IdentityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> ChangePassword([FromForm] PassChangeDto changeDto)
     {
-        var user = await userRepository.FindUser(changeDto.Username);
+        var user = await service.FindUser(changeDto.Username);
         if(user is null){
             return BadRequest("Incorrect username");
         }
@@ -109,7 +110,7 @@ public class IdentityController : Controller
     [Route("[action]")]
     public async Task<IActionResult> GetUsers()
     {
-        var users =  userRepository.GetUsers();
+        var users =  service.GetUsers();
         return base.View(users);
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SMLibrary.Core.Services;
 using SMLibrary.Presentation.Dtos;
 using SMlibraryApp.Core.Repository;
 
@@ -8,10 +9,10 @@ namespace SMLibrary.Presentation.Controllers;
 
 public class UserController : Controller
 {
-    private readonly IUserRepository userBooksRepository;
-    public UserController(IUserRepository userBooksRepository)
+    private readonly IUserService service;
+    public UserController(IUserService service)
     {
-        this.userBooksRepository = userBooksRepository;
+        this.service = service;
     }
     [HttpGet]
     [Authorize]
@@ -19,7 +20,7 @@ public class UserController : Controller
     public async Task<IActionResult> GetUserItems()
     {
         var userLogin = User.Identity.Name;
-        var books = await userBooksRepository.GetBooksbyUser(userLogin);
+        var books = await service.GetBooksbyUser(userLogin);
         return base.View(books);
     }
 
@@ -27,7 +28,7 @@ public class UserController : Controller
     [Authorize]
     public async Task<IActionResult> Account()
     {
-        var balance = await userBooksRepository.GetBalance(User.Identity.Name);
+        var balance = await service.GetBalance(User.Identity.Name);
         return base.View(balance);
     }
     [HttpPost]
@@ -38,7 +39,7 @@ public class UserController : Controller
         }
         var CardNumbers = card.CardNumber.Split(" ");
         if(CardNumbers.Length==4 || CardNumbers.Length==1){
-            await userBooksRepository.SetBalance(card.Amount,User.Identity.Name);
+            await service.SetBalance(card.Amount,User.Identity.Name);
             return base.RedirectToAction("Account");
         }
         return BadRequest("Wrong Entered ");
@@ -56,7 +57,7 @@ public class UserController : Controller
         var userLogin = User.Identity.Name;
         if (userLogin is null)
             return BadRequest();
-        await userBooksRepository.AddBookToUser(id, userLogin);
+        await service.AddBookToUser(id, userLogin);
 
         return base.RedirectToAction("Get", "Books");
     }

@@ -8,6 +8,8 @@ using SMlibraryApp.Infrastructure.Services;
 using SMlibraryApp.Infrastructure.Data;
 using SMlibraryApp.Presentation.Middlewares;
 using System.Reflection;
+using SMLibrary.Core.Services;
+using SMLibrary.Infrastructure.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +24,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookRepository, BooksRepository>();
 builder.Services.AddScoped<ILogRepository, LogRepository>();
-
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<ILogService>(provider =>
 {
     bool IsLogEnabled = builder.Configuration.GetSection("IsLogEnabled").Get<bool>();

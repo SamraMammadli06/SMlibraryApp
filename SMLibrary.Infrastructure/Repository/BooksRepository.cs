@@ -24,9 +24,7 @@ public class BooksRepository : IBookRepository
     public async Task DeleteBook(int id)
     {
         var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
-
         this.dbContext.Remove<Book>(book);
-
         await this.dbContext.SaveChangesAsync();
     }
 
