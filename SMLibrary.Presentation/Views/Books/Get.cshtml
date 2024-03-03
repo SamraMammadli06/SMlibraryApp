@@ -1,0 +1,41 @@
+<a asp-action="Create" asp-controller="Books">Create Book</a>
+
+<div class="card" style="width: 18rem;">
+  <ul class="border border-dark-subtle" class="list-group list-group-flush">
+    @foreach (var item in @Model)
+    {
+      <li class="list-group-item">
+        <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
+          <a asp-controller="Books" asp-action="GetById" asp-route-id="@item.Id" id="ItemId-@item.Id">@item.Id</a>
+          <div>Name: @item.Name</div>
+          <div>Author: @item.Author</div>
+          <div>Price: @item.Price</div>
+          <button type="button" onclick="submitDeleteForm('@item.Id')">Delete</button>
+          <button asp-controller="User" asp-action="AddBookToUser" asp-route-id = "@item.Id">Add book</button>
+        </form>
+      </li>
+    }
+  </ul>
+</div>
+
+
+<script>//это из-за того что в forms нету метода delete
+  function submitDeleteForm(itemId) {
+    var form = document.getElementById('deleteForm-' + itemId);
+    var formData = new FormData(form);
+    fetch(form.action + '?id=' + itemId, {
+      method: 'DELETE',
+      body: formData
+    })
+      .then(response => {
+        if (response.ok) {
+          form.remove();
+        } else {
+          console.error('Error deleting resource');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+</script>

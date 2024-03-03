@@ -1,0 +1,21 @@
+@model IEnumerable<System.Security.Claims.Claim>
+
+@{
+    ViewData["Title"] = "Account";
+    var pos = 0;
+}
+
+<div class="text-center">
+    Account:
+    @foreach (var claim in Model)
+    {
+        <div>
+            @{
+                pos = claim.Type.LastIndexOf('/')+1;
+            }
+            <label>@claim.Type.Substring(pos, claim.Type.Length - pos).ToUpper():</label>
+            <label>@claim.Value</label>
+        </div>
+    }
+    <a type="button" asp-action="GetUserItems">MyBooks</a>
+</div>

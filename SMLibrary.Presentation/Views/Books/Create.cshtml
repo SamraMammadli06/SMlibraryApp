@@ -1,0 +1,17 @@
+@model IEnumerable<Book>
+@{
+  Book newbook = new Book();
+}
+
+<form asp-controller="Books" asp-action="Create" method="post">
+    <label asp-for="@newbook.Name">Name: </label>
+    <input type="text" asp-for="@newbook.Name">
+    <br>
+    <label asp-for="@newbook.Author">Author: </label>
+    <input type="text" asp-for="@newbook.Author">
+    <br>
+    <label asp-for="@newbook.Price">Price: </label>
+    <input type="text" asp-for="@newbook.Price">
+    <br>
+    <input type="submit" value="Add">
+</form>
