@@ -10,13 +10,12 @@
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
+            background-color: white;
             text-align: center;
         }
 
-        
-
-        h1, h2 {
+        h1,
+        h2 {
             color: #050100;
             margin-bottom: 20px;
         }
@@ -28,27 +27,65 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Welcome to  library app!</h1>
-        <p>
-            Whether you're an avid reader, a student, or someone who simply loves to explore the
-            world of books, our app is designed to cater to your literary needs with ease and convenience.
-            Getting started with our library app is a breeze. If you're new to the platform, you'll begin by signing up
-            for
-            an account. Simply provide us with some basic information like your name, email address, and create a
-            password.
-            Once you've completed this step, you'll be ready to embark on your reading journey.
-        </p>
+        <h1>Welcome to library app!</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <p>
+                    Whether you're an avid reader, a student, or someone who simply loves to explore the
+                    world of books, our app is designed to cater to your literary needs with ease and convenience.
+                    Getting started with our library app is a breeze. If you're new to the platform, you'll begin by signing up
+                    for an account. Simply provide us with some basic information like your name, email address, and create a
+                    password.
+                    Once you've completed this step, you'll be ready to embark on your reading journey.
+                </p>
+                <div>
+                    <a class="btn orange-btn" href="@Url.Action("Login", "Identity")">Log In</a>
+                    <a class="btn orange-btn" href="@Url.Action("Register", "Identity")">Register</a>
+                </div>
+            </div>
+            <img class="col-md-6" src="https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg">
+        </div>
+        <div style="padding: 50px;"></div>
         <h2>About Library</h2>
-        <p>
-            Once you're logged in, you'll have access to a vast collection of books right at your fingertips. Whether
-            you're
-            interested in fiction, non-fiction, mystery, romance, or any other genre, you'll find a diverse selection to
-            choose from. Browse through our curated recommendations, search for specific titles or authors, or explore
-            new
-            releases and bestsellers.
-        </p>
+        <div class="row">
+            <div class="col-md-4 text-right">
+               <h3>1.Create</h3>
+               <p style="color:#6f6f6f;">
+                Unleash your creativity and share your original story with the world. Whether you're a seasoned writer or just starting out, now is the time to let your voice be heard.
+               </p>
+            </div>
+            <div class="col-md-4 text-right">
+                <h3>2.Read</h3>
+                <p style="color:#6f6f6f;">Step into a world of endless possibilities and boundless imagination through the pages of a book. Reading is not just an activity; it's a journey that transports you to new realms, introduces you to captivating characters, and sparks your imagination like nothing else can.</p>
+            </div>
+            <div class="col-md-4 text-right">
+                <h3>3.Have Fun</h3>
+                <p style="color:#6f6f6f;">Whether you're curled up on the couch or on-the-go with your smartphone or tablet, online reading offers a convenient and enjoyable way to escape reality and explore new worlds. So, get comfortable, open your browser, and let the fun begin!</p>
+            </div>
+        </div>
+
+
     </div>
 </body>
+
 </html>
+
+<style>
+    .orange-btn {
+        background-color: #ff6122;
+        color: black;
+        border: none;
+        padding: 8px 50px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .orange-btn:hover {
+        background-color: darkorange;
+        color: black;
+    }
+</style>

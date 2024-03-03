@@ -10,44 +10,64 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SMlibraryApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SMlibraryApp.styles.css" asp-append-version="true" />
 </head>
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Library</a>
+    <nav class="navbar navbar-expand-lg  navbar-light bg-light">
+        <i class="fa fa-book" style="font-size:30px;color:red"></i>
+        <a class="navbar-brand" href="#">SMLib</a>
         <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" asp-controller="Home" asp-action="Index">Home</a>
                 @if (!isAuth)
                 {
-                    <a class="nav-item nav-link" asp-action="Login" asp-controller="Identity">SingIn/SingUp</a>
+                    <a style="color: black;" class="nav-item nav-link" asp-controller="Home" asp-action="Index">Home</a>
                 }
-                <a class="nav-item nav-link" asp-controller="Books" asp-action="Get">Books</a>
+
+                <div class="nav-item nav-link dropdown">
+                    <a style="text-decoration: none; color: black" class="dropbtn">Browse</a>
+                    <div class="dropdown-content">
+                        <a href="#">Adventure</a>
+                        <a href="#">Horror</a>
+                        <a href="#">Mystery</a>
+                        <a href="#">Romance</a>
+                        <a href="#">Poetry</a>
+                        <a href="#">Science Fiction</a>
+                    </div>
+                </div>
                 @if (IsAdmin)
                 {
-                    <a class="nav-item nav-link" asp-controller="Identity" asp-action="GetUsers">Users</a>
+                    <a style="color: black;" class="nav-item nav-link" asp-controller="Identity"
+                        asp-action="GetUsers">Users</a>
                 }
+
                 @if (isAuth)
                 {
-                    <a class="nav-item nav-link" asp-controller="Identity" asp-action="LogOut">Log Out</a>
+                    <a style="color: black;" class="nav-item nav-link" asp-controller="Identity" asp-action="LogOut">Log
+                        Out</a>
                 }
 
                 @if (isAuth && !IsAdmin)
                 {
-                    <a class="nav-item nav-link" asp-controller="User" asp-action="Account">Account</a>
+                    <a style="color: black;" class="nav-item nav-link" asp-controller="User"
+                        asp-action="Account">Profile</a>
+                }
+                @if(!isAuth){
+                    <a style="color: black;" class="nav-item nav-link" asp-action="Login"
+                        asp-controller="Identity">SingIn/SingUp</a>
                 }
             </div>
         </div>
     </nav>
 </header>
 
-<body class="backImage">
+<body>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -71,10 +91,42 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2023 - SMlibraryApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
+
 
 </html>
+
+<style>
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+        overflow-y: auto;
+        max-height: 200px;
+        column-count: 2;
+        column-gap: 20px;
+        padding: 10px;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 10px 0;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-content a:hover {
+        background-color: rgba(199, 193, 193, 0.466);
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+</style>
