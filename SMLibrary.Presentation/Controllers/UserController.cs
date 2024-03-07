@@ -36,7 +36,8 @@ public class UserController : Controller
     [Authorize]
     public async Task<IActionResult> Account()
     {
-        return base.View();
+        var books = await service.GetMyBooks(User.Identity.Name);
+        return base.View(books);
     }
    
     [HttpPost]

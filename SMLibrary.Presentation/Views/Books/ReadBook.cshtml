@@ -1,9 +1,26 @@
+@model Book
 @{
     ViewData["Title"] = "PDF Viewer";
 }
 
 <div id="pdf-container">
-    <canvas id="pdf-render"></canvas>
+    <p class="card-text">Title: @Model.Name</p>
+    @if (Model.Content.Contains(".pdf"))
+    {
+        <canvas id="pdf-render"></canvas>
+    }
+    @if (Model.Content.Contains(".txt"))
+    {
+        if (!File.Exists(Model.Content))
+        {
+            throw new FileNotFoundException("File not found.", Model.Content);
+        }
+        
+        string content = File.ReadAllText(Model.Content);
+        <textarea rows="40" class="form-control" readonly>@content</textarea>
+
+    }
+    <a href="@Url.Action("Get", "Books")" class="btn btn-primary mt-3">Return to Books</a>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
@@ -45,13 +62,16 @@
         background-color: white;
         background-image: none;
         position: relative;
-        height: calc(100vh - 50px);
-        overflow-y: auto;
+        width: calc(50vw - 100px);
+        top: 50%;
+        left: 20%;
+
     }
 
     #pdf-render {
         display: block;
         width: 100%;
+        height: 100%;
     }
 
     #page-navigation {

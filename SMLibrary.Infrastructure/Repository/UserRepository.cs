@@ -58,7 +58,10 @@ public class UserRepository : IUserRepository
         }
     }
 
-
+    public async Task<IEnumerable<Book>> GetMyBooks(string UserName){
+        var books  = dbContext.Books.Where(book=>book.Author==UserName).AsEnumerable<Book>();
+        return books;
+    }
     public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
     {
         var userBook = await dbContext.BookUserNames

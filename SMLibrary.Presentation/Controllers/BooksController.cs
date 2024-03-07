@@ -41,9 +41,58 @@ public class BooksController : Controller
     [Route("[controller]/[action]/{tag}")]
     public async Task<IActionResult> ByTag(string tag)
     {
-        var books =  await service.GetBooksByTag(tag);
+        var books = await service.GetBooksByTag(tag);
 
         return View(books);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Write()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Write([FromForm] Book newbook, IFormFile imageFile)
+    {
+        if (imageFile != null && imageFile.Length > 0)
+        {
+            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+            string uniqueFileName1 = Path.GetFileName(imageFile.FileName);
+            string filePathh = Path.Combine(uploadsFolder, uniqueFileName1);
+
+            using (var stream = new FileStream(filePathh, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            newbook.Image = "/images/" + uniqueFileName1;
+        }
+        else
+        {
+            newbook.Image = "/images/" + "notFound.png";
+        }
+        if (!string.IsNullOrEmpty(newbook.Content))
+        {
+            string filesFolder = Path.Combine(webHostEnvironment.ContentRootPath, "Files");
+
+            if (!Directory.Exists(filesFolder))
+            {
+                Directory.CreateDirectory(filesFolder);
+            }
+
+            string textFileName = $"{newbook.Name}-{newbook.Author}.txt";
+            string textFilePath = Path.Combine(filesFolder, textFileName);
+
+            System.IO.File.WriteAllText(textFilePath, newbook.Content);
+            newbook.Content = textFilePath;
+        }
+
+
+        await service.Create(newbook);
+        return RedirectToAction("Get", "Books");
     }
 
     [HttpGet]
@@ -71,6 +120,10 @@ public class BooksController : Controller
 
             newbook.Image = "/images/" + uniqueFileName1;
         }
+        else
+        {
+            newbook.Image = "/images/" + "notFound.png";
+        }
         if (contentFile != null && contentFile.Length > 0)
         {
             string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "pdf");
@@ -95,7 +148,6 @@ public class BooksController : Controller
     }
 
     [HttpDelete]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         await service.DeleteBook(id);

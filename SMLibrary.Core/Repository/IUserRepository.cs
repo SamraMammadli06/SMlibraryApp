@@ -8,6 +8,7 @@ public interface IUserRepository
     public Task Create(IdentityUser newuser);
     public Task Delete(string name);
     public Task<IEnumerable<Book>> GetBooksbyUser(string UserName);
+    public  Task<IEnumerable<Book>> GetMyBooks(string UserName);
     public Task<bool> AddBookToUser(int id, string UserName);
     public Task<IdentityUser?> FindUser(string UserName);
     public Task<IdentityUser> FindUserbyId(int id);

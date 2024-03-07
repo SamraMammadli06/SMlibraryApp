@@ -51,7 +51,11 @@ namespace SMLibrary.Infrastructure.Services
             return user;
         }
 
-        
+        public async Task<IEnumerable<Book>> GetMyBooks(string UserName){
+            var books = await userRepository.GetMyBooks(UserName);
+           
+            return books;
+        }
 
         public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
         {

@@ -8,41 +8,44 @@
   <a href="@Url.Action("Create", "Books")" class="btn btn-primary">Create Book</a>
 }
 
-@foreach (var item in @Model)
-{
-
-  string truncatedDescription = string.Empty;
-
-  if (!string.IsNullOrWhiteSpace(item.Description))
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  @foreach (var item in @Model)
   {
-    string[] words = item.Description.Split(' ');
-    if (words.Length <= 20)
-    {
-      truncatedDescription = string.Join(" ", words);
-    }
-    else
-    {
-      truncatedDescription = string.Join(" ", words.Take(20)) + " ...";
-    }
-  }
+    string truncatedDescription = string.Empty;
 
+    if (!string.IsNullOrWhiteSpace(item.Description))
+    {
+      string[] words = item.Description.Split(' ');
+      if (words.Length <= 20)
+      {
+        truncatedDescription = string.Join(" ", words);
+      }
+      else
+      {
+        truncatedDescription = string.Join(" ", words.Take(20)) + " ...";
+      }
+    }
 
-  <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
-    <div class="card mb-3" style="max-width: 400px;">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img src="@Url.Content(item.Image)" class="img-fluid rounded-start" alt="BookCover">
-        </div>
-        <div class="col-md-8">
+    <div class="col">
+      <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
+        <div class="card h-0">
+          <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
           <div class="card-body">
-            <h5 class="card-title"> @item.Name</h5>
+            <h5 class="card-title">@item.Name</h5>
             <p class="card-text">Author: @item.Author</p>
             <p class="card-text" style="color: gray;">@truncatedDescription</p>
             <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
+            @if(item.IsFinished == false){
+              <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+            }
+            else{
+              <p class="card-text" style="color: green;">Finshed</p>
+            }
             @if (IsAuth && !IsAdmin)
             {
               <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
-              <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id">Add book</button>
+              <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id" class="btn btn-primary">Add
+                book</button>
             }
             @if (IsAdmin)
             {
@@ -50,10 +53,10 @@
             }
           </div>
         </div>
-      </div>
+      </form>
     </div>
-  </form>
-}
+  }
+</div>
 
 <script>//это из-за того что в forms нету метода delete
   function submitDeleteForm(itemId) {
