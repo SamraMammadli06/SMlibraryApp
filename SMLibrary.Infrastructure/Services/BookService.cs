@@ -24,6 +24,16 @@ namespace SMLibrary.Infrastructure.Services
             }
             return books;
         }
+
+        public async Task<IEnumerable<Book>> GetBooksByTag(string tag)
+        {
+            var books = await repository.GetBooksByTag(tag);
+            if (books is null)
+            {
+                return Enumerable.Empty<Book>();
+            }
+            return books;
+        }
         public async Task<Book?> GetBookById(int id)
         {
             if (id < 1)
@@ -49,17 +59,6 @@ namespace SMLibrary.Infrastructure.Services
             }
             await repository.DeleteBook(id);
         }
-        public async Task BuyBook(int id, string UserName)
-        {
-            if (id < 1)
-            {
-                throw new ArgumentException("Can't be less than 1");
-            }
-            if (string.IsNullOrWhiteSpace(UserName))
-            {
-                throw new ArgumentNullException("Username is wrong");
-            }
-            await repository.BuyBook(id, UserName);
-        }
+
     }
 }

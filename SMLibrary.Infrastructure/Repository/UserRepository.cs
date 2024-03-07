@@ -4,7 +4,6 @@ using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Infrastructure.Data;
 using SMLibraryApp.Core.Models;
-using SMLibrary.Core.Models;
 
 namespace SMlibraryApp.Infrastructure.Repository;
 public class UserRepository : IUserRepository
@@ -69,37 +68,7 @@ public class UserRepository : IUserRepository
         return books;
     }
 
-    public async Task<double> GetBalance(string UserName)
-    {
-        var userBook = await dbContext.UserBalances
-          .FirstOrDefaultAsync(b => b.UserName == UserName);
-        return userBook.Balance; 
-    }
-    public async Task SetBalance(double amount, string UserName)
-    {
-        var userBook = await dbContext.UserBalances
-          .FirstOrDefaultAsync(b => b.UserName == UserName);
-        userBook.Balance += amount;
-        await dbContext.SaveChangesAsync();
-    }
-    public async Task AddBalancetoUser(string UserName){
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName== UserName);
-
-        if (user != null)
-        {
-            var UserBalance = new UserBalance
-            {
-                UserName = UserName,
-                Balance =0,
-            };
-            await dbContext.UserBalances.AddAsync(UserBalance);
-            await dbContext.SaveChangesAsync();
-        }
-        else
-        {
-            Console.WriteLine("No user found with the specified ID.");
-        }
-    }
+   
     public async Task Delete(string name)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == name);

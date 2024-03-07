@@ -1,6 +1,7 @@
 using System.Data.SqlClient;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
+using SMLibrary.Core.Models;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Infrastructure.Data;
@@ -33,19 +34,26 @@ public class BooksRepository : IBookRepository
         var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
         return book;
     }
-    public async Task BuyBook(int id,string UserName)
-    {
-        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
-        var userBook = await dbContext.UserBalances
-          .FirstOrDefaultAsync(b => b.UserName == UserName);
-        userBook.Balance -= (double)book.Price;
-        await dbContext.SaveChangesAsync();
-    }
+
     public async Task<IEnumerable<Book>> GetBooks()
     {
         var books = this.dbContext.Books.AsEnumerable<Book>();
         return books;
     }
-    
+
+    public async Task<IEnumerable<Book>> GetBooksByTag(string tag)
+    {
+        if (Enum.TryParse<Tag>(tag, out var tagEnum))
+        {
+            return await dbContext.Books.Where(book => book.tag == tagEnum).ToListAsync();
+        }
+        else
+        {
+            return Enumerable.Empty<Book>();
+        }
+    }
+
+
+
 }
 

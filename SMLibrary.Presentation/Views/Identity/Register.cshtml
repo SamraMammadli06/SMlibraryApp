@@ -60,19 +60,24 @@
                     <p>Please enter your details</p>
                 </div>
                 <form method="post" asp-action="Register" class="login-form">
+                    <div asp-validation-summary="All" class="text-danger"></div> 
                     <div class="form-group">
                         <input asp-for="@UserName" type="text" placeholder="Username" required>
+                        <span asp-validation-for="@UserName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input asp-for="@Email" type="email" placeholder="Email" required>
+                        <span asp-validation-for="@Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input asp-for="@Password" type="password" placeholder="Password" required>
+                        <span asp-validation-for="@Password" class="text-danger"></span>
                     </div>
                     <div class="form-group btn-container">
-                        <input type="submit" value="Sing Up" class="login-btn">
+                        <input type="submit" value="Sign Up" class="login-btn">
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
@@ -83,16 +88,16 @@
             <a class="btn orange-btn" href="@Url.Action("Login", "Identity")">Log In</a>
         </div>
     </div>
-<script>
+    <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const orangeRight = document.querySelector('.orange-right');
+        document.addEventListener("DOMContentLoaded", function () {
+            const orangeRight = document.querySelector('.orange-right');
 
-        if (orangeRight) {
-            orangeRight.style.transform = "translateX(0)";
-        }
-    });
-</script>
+            if (orangeRight) {
+                orangeRight.style.transform = "translateX(0)";
+            }
+        });
+    </script>
 </body>
 
 </html>

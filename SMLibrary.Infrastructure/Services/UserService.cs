@@ -16,10 +16,6 @@ namespace SMLibrary.Infrastructure.Services
             this.userRepository = userRepository;
         }
 
-        public async Task AddBalancetoUser(string UserName)
-        {
-            await userRepository.AddBalancetoUser(UserName);
-        }
 
         public async Task<bool> AddBookToUser(int id, string UserName)
         {
@@ -55,11 +51,7 @@ namespace SMLibrary.Infrastructure.Services
             return user;
         }
 
-        public async Task<double> GetBalance(string UserName)
-        {
-            var amount = await userRepository.GetBalance(UserName);
-            return amount;
-        }
+        
 
         public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
         {
@@ -74,12 +66,6 @@ namespace SMLibrary.Infrastructure.Services
             return users;
         }
 
-        public async Task SetBalance(double amount, string UserName)
-        {
-            if(amount<1){
-                throw new ArgumentException("Enter correct amount");
-            }
-            await userRepository.SetBalance(amount,UserName);
-        }
+       
     }
 }

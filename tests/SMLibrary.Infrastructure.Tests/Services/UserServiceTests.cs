@@ -26,14 +26,6 @@ namespace SMLibrary.Infrastructure.Tests.Services
 
             await Assert.ThrowsAsync<NullReferenceException>(async () => await service.FindUserbyId(-1));
         }
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(0)]
-        public async Task SetBalance_CheksAmountisLessthan1_ThrowsArgumentException(int amount)
-        {
-            var service = new UserService(null);
-
-            await Assert.ThrowsAsync<ArgumentException>(async () => await service.SetBalance(amount,"name"));
-        }
+        
     }
 }

@@ -38,32 +38,21 @@ public class BooksController : Controller
         return View(book);
     }
     [HttpGet]
-    [Authorize]
-    [Route("[controller]/[action]/{id}")]
-    public async Task<IActionResult> BuyBook(int id)
+    [Route("[controller]/[action]/{tag}")]
+    public async Task<IActionResult> ByTag(string tag)
     {
-        var balance = await userService.GetBalance(User.Identity.Name);
-        var book = await service.GetBookById(id);
-        if (balance < book.Price)
-        {
-            return base.BadRequest("Not enough money");
-        }
-        var check = await userService.AddBookToUser(id, User.Identity.Name);
-        if (check == false)
-        {
-            await service.BuyBook(id, User.Identity.Name);
-        }
-        return RedirectToAction("Get");
-    }
+        var books =  await service.GetBooksByTag(tag);
 
+        return View(books);
+    }
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create()
     {
-
         return View();
     }
+
     [HttpPost]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create([FromForm] Book newbook, IFormFile imageFile, IFormFile contentFile)

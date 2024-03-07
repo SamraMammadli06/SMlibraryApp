@@ -30,15 +30,16 @@
                     <a style="color: black;" class="nav-item nav-link" asp-controller="Home" asp-action="Index">Home</a>
                 }
 
+                <a style="color: black;" class="nav-item nav-link" href="@Url.Action("Get", "Books")">Books</a>
                 <div class="nav-item nav-link dropdown">
                     <a style="text-decoration: none; color: black" class="dropbtn">Browse</a>
                     <div class="dropdown-content">
-                        <a href="#">Adventure</a>
-                        <a href="#">Horror</a>
-                        <a href="#">Mystery</a>
-                        <a href="#">Romance</a>
-                        <a href="#">Poetry</a>
-                        <a href="#">Science Fiction</a>
+                        <a href="/Books/ByTag/Adventure">Adventure</a>
+                        <a href="/Books/ByTag/Horror">Horror</a>
+                        <a href="/Books/ByTag/Mystery">Mystery</a>
+                        <a href="/Books/ByTag/Romance">Romance</a>
+                        <a href="/Books/ByTag/Poetry">Poetry</a>
+                        <a href="/Books/ByTag/Science">Science</a>
                     </div>
                 </div>
                 @if (IsAdmin)
@@ -58,7 +59,8 @@
                     <a style="color: black;" class="nav-item nav-link" asp-controller="User"
                         asp-action="Account">Profile</a>
                 }
-                @if(!isAuth){
+                @if (!isAuth)
+                {
                     <a style="color: black;" class="nav-item nav-link" asp-action="Login"
                         asp-controller="Identity">SingIn/SingUp</a>
                 }
