@@ -1,0 +1,55 @@
+@model Book
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-controller="Books" asp-action="ChangeBook" method="post" style="color: black;">
+                <div class="form-group">
+                    <label asp-for="@Model.Name">Name: </label>
+                    <input type="text" asp-for="@Model.Name" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Author">Author: </label>
+                    <input type="text" asp-for="@Model.Author" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.Description">Description: </label>
+                    <input type="text" asp-for="@Model.Description" class="form-control">
+                </div>
+                <div class="form-group" id="textAreaGroup">
+                    <label>Content:</label>
+                    @{
+                        if (!File.Exists(Model.Content))
+                        {
+                            throw new FileNotFoundException("File not found.", Model.Content);
+                        }
+
+                        string content = File.ReadAllText(Model.Content);
+                        <textarea name="content" rows="40" class="form-control">@content</textarea>
+                    }
+                </div>
+                <input type="hidden"  asp-for="@Model.Content" />
+                <br>
+                <div class="form-group">
+                    <label asp-for="@Model.tag">Tag: </label>
+                    <select id="category" asp-for="@Model.tag">
+                        <option value="adventure">Adventure</option>
+                        <option value="horror">Horror</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="romance">Romance</option>
+                        <option value="poetry">Poetry</option>
+                        <option value="science">Science</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status:</label><br>
+                    <label><input type="radio" asp-for="@Model.IsFinished" value="true" required> Finished</label>
+                    <label><input type="radio" asp-for="@Model.IsFinished" value="false" required> Ongoing</label>
+                </div>
+                <br>
+                <button  id="updateButton" type="submit" class="btn btn-primary">Change</button>
+            </form>
+        </div>
+    </div>
+</div>
+

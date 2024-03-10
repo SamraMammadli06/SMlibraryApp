@@ -12,14 +12,15 @@ namespace SMLibrary.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository userRepository;
-        public UserService(IUserRepository userRepository){
+        public UserService(IUserRepository userRepository)
+        {
             this.userRepository = userRepository;
         }
 
 
         public async Task<bool> AddBookToUser(int id, string UserName)
         {
-            var check = await userRepository.AddBookToUser(id,UserName);
+            var check = await userRepository.AddBookToUser(id, UserName);
             return check;
         }
 
@@ -33,10 +34,12 @@ namespace SMLibrary.Infrastructure.Services
             await userRepository.Delete(name);
         }
 
+       
         public async Task<IdentityUser?> FindUser(string UserName)
         {
             var user = await userRepository.FindUser(UserName);
-            if(user is null){
+            if (user is null)
+            {
                 throw new ArgumentNullException("Wrong data");
             }
             return user;
@@ -45,22 +48,24 @@ namespace SMLibrary.Infrastructure.Services
         public async Task<IdentityUser> FindUserbyId(int id)
         {
             var user = await userRepository.FindUserbyId(id);
-            if(user is null){
+            if (user is null)
+            {
                 throw new ArgumentNullException("Wrong data");
             }
             return user;
         }
 
-        public async Task<IEnumerable<Book>> GetMyBooks(string UserName){
+        public async Task<IEnumerable<Book>> GetMyBooks(string UserName)
+        {
             var books = await userRepository.GetMyBooks(UserName);
-           
+
             return books;
         }
 
         public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
         {
             var books = await userRepository.GetBooksbyUser(UserName);
-           
+
             return books;
         }
 
@@ -70,6 +75,6 @@ namespace SMLibrary.Infrastructure.Services
             return users;
         }
 
-       
+
     }
 }

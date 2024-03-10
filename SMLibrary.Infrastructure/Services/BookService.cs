@@ -34,6 +34,10 @@ namespace SMLibrary.Infrastructure.Services
             }
             return books;
         }
+        public async Task ChangeBook(Book book)
+        {
+            await repository.ChangeBook(book);
+        }
         public async Task<Book?> GetBookById(int id)
         {
             if (id < 1)

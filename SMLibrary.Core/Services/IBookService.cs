@@ -13,5 +13,6 @@ namespace SMLibrary.Core.Services
         public Task Create(Book newbook);
         public Task DeleteBook(int id);
         public Task<IEnumerable<Book>> GetBooksByTag(string tag);
+        public Task ChangeBook(Book book);
     }
 }

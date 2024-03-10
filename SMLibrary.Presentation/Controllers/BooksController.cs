@@ -48,6 +48,41 @@ public class BooksController : Controller
 
     [HttpGet]
     [Authorize]
+    [Route("/[action]/{id}")]
+    public async Task<IActionResult> ChangeBook(int id)
+    {
+        var book = await service.GetBookById(id);
+        return View(book);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [Route("/[action]/{id}")]
+    public async Task<IActionResult> ChangeBook([FromForm] Book newbook,int id)
+    {
+        if (!string.IsNullOrEmpty(newbook.Content))
+        {
+            string filesFolder = Path.Combine(webHostEnvironment.ContentRootPath, "Files");
+
+            if (!Directory.Exists(filesFolder))
+            {
+                Directory.CreateDirectory(filesFolder);
+            }
+
+            string textFileName = $"{newbook.Name}-{newbook.Author}.txt";
+            string textFilePath = Path.Combine(filesFolder, textFileName);
+
+            System.IO.File.WriteAllText(textFilePath, newbook.Content);
+            newbook.Content = textFilePath;
+        }
+
+        await service.ChangeBook(newbook);
+        return RedirectToAction("Get", "Books");
+    }
+
+
+    [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Write()
     {
         return View();

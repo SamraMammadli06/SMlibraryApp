@@ -40,12 +40,12 @@
               @if (item.IsFinished == false)
               {
                 <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+                <a href="@Url.Action("ChangeBook", "Books", new { id = item.Id })" class="btn btn-secondary">Change</a>
               }
               else
               {
                 <p class="card-text" style="color: green;">Finished</p>
               }
-              <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Change</a>
               <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
             </div>
           </div>
