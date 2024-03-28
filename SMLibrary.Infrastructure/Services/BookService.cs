@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
@@ -38,6 +39,10 @@ namespace SMLibrary.Infrastructure.Services
         {
             await repository.ChangeBook(book);
         }
+        public async Task<IEnumerable<Comment>> GetComments(int id){
+            var comments = await repository.GetComments(id);
+            return comments;
+        }
         public async Task<Book?> GetBookById(int id)
         {
             if (id < 1)
@@ -63,6 +68,8 @@ namespace SMLibrary.Infrastructure.Services
             }
             await repository.DeleteBook(id);
         }
-
+        public async Task AddComment(string author,string comment,string userName){
+            await repository.AddComment(author,comment,userName);
+        }
     }
 }

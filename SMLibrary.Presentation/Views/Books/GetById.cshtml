@@ -1,5 +1,7 @@
 @model Book
-
+@{
+  string comment = string.Empty;
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,11 +11,12 @@
   <title>Book Information</title>
   <style>
     input[type="text"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
+
     .label {
       font-weight: bold;
     }
@@ -28,14 +31,15 @@
       display: block;
       margin-bottom: 10px;
     }
+
     .login-btn {
-        width: 100%;
-        padding: 10px;
-        background-color: #ff6122;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+      width: 100%;
+      padding: 10px;
+      background-color: #ff6122;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -63,9 +67,29 @@
         </div>
       </td>
       <td style="width: 50%; vertical-align: top;">
-          <h1>Comments</h1>
-          <input type="text" placeholder="Add your comment"></input>
+        <h1>Comments</h1>
+
+        @if (ViewBag.Comments is null)
+        {
+          <h2>No Comments</h2>
+        }
+
+        else
+        {
+          foreach (var Comment in ViewBag.Comments)
+          {
+            <div style="border: 1px solid orange;">
+              <p>User: @Comment.Sender</p>
+              <p>@Comment.Text</p>
+            </div>
+          }
+        }
+        <br>
+        <br>
+        <form asp-action="AddComment" asp-route-author="@Model.Author" asp-route-id="@Model.Id" method="post">
+          <input asp-for="@comment" type="text" placeholder="Add your comment"></input>
           <input type="submit" value="Submit" class="login-btn">
+        </form>
       </td>
     </tr>
   </table>

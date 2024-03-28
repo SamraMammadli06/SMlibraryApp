@@ -1,10 +1,8 @@
+using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 using SMlibraryApp.Core.Models;
-using SMlibraryApp.Core.Repository;
-using SMlibraryApp.Infrastructure.Repository;
 namespace SMlibraryApp.Presentation.Controllers;
 
 public class BooksController : Controller
@@ -36,6 +34,9 @@ public class BooksController : Controller
         {
             return NotFound($"Book with id {id} not found");
         }
+        
+        var comments = await service.GetComments(id);
+        ViewBag.Comments = comments;
         return View(book);
     }
     
@@ -55,6 +56,15 @@ public class BooksController : Controller
     {
         var book = await service.GetBookById(id);
         return View(book);
+    }
+
+    [HttpPost]
+    [Authorize]
+    [Route("/[action]/{author}/{id}")]
+    public async Task<IActionResult> AddComment([FromForm] string comment,string author,int id)
+    {
+        await service.AddComment(author,comment,User.Identity.Name);
+        return base.RedirectToAction("GetById","Books",new{id = id});
     }
 
     [HttpPost]

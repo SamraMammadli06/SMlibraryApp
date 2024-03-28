@@ -14,6 +14,6 @@ public class Book
     public string? Content { get; set; }
     public bool IsFinished { get; set; }
     public Tag? tag { get; set; }
-
+    public List<Comment> Comments = new List<Comment>();
     public IEnumerable<BookUserName> UserNames = new List<BookUserName>();
 }

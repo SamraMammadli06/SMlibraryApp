@@ -7,5 +7,4 @@ public class UserCustomUser
     public string? ImageUrl { get; set; }
     public string? BannerColor { get; set; }
     public string? Description { get; set; }
-    IEnumerable<string> Comments = new List<string>();
 }

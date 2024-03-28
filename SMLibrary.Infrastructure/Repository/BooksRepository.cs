@@ -31,7 +31,7 @@ public class BooksRepository : IBookRepository
 
     public async Task ChangeBook(Book book)
     {
-        var oldBook = await this.dbContext.Books.FirstOrDefaultAsync(b => b.Name == book.Name && b.Author==book.Author);
+        var oldBook = await this.dbContext.Books.FirstOrDefaultAsync(b => b.Name == book.Name && b.Author == book.Author);
 
         if (oldBook != null)
         {
@@ -45,6 +45,28 @@ public class BooksRepository : IBookRepository
 
             await this.dbContext.SaveChangesAsync();
         }
+    }
+    public async Task AddComment(string author, string comment, string userName)
+    {
+        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Author == author);
+        if (book != null)
+        {
+            var newComment = new Comment
+            {
+                BookId = book.Id,
+                Sender = userName,
+                Text = comment
+            };
+
+            await dbContext.Comments.AddAsync(newComment);
+
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task<IEnumerable<Comment>> GetComments(int id){
+        var comments  = dbContext.Comments.Where(c=>c.BookId==id).AsEnumerable<Comment>();
+        return comments;
     }
 
     public async Task<Book?> GetBookById(int id)
