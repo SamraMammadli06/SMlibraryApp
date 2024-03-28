@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
@@ -37,6 +38,7 @@ public class BooksController : Controller
         }
         return View(book);
     }
+    
     [HttpGet]
     [Route("[controller]/[action]/{tag}")]
     public async Task<IActionResult> ByTag(string tag)
@@ -58,8 +60,25 @@ public class BooksController : Controller
     [HttpPost]
     [Authorize]
     [Route("/[action]/{id}")]
-    public async Task<IActionResult> ChangeBook([FromForm] Book newbook,int id)
+    public async Task<IActionResult> ChangeBook([FromForm] Book newbook, IFormFile imageFile)
     {
+        if (imageFile != null && imageFile.Length > 0)
+        {
+            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+            string uniqueFileName1 = Path.GetFileName(imageFile.FileName);
+            string filePathh = Path.Combine(uploadsFolder, uniqueFileName1);
+
+            using (var stream = new FileStream(filePathh, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            newbook.Image = "/images/" + uniqueFileName1;
+        }
+        else
+        {
+            newbook.Image = "/images/" + "notFound.png";
+        }
         if (!string.IsNullOrEmpty(newbook.Content))
         {
             string filesFolder = Path.Combine(webHostEnvironment.ContentRootPath, "Files");

@@ -1,10 +1,75 @@
 @model Book
 
-<div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-  <div class="card-header">Name: @Model.Name</div>
-  <div class="card-body">
-    <h5 class="card-title">Author: @Model.Author</h5>
-    <a class="card-text" asp-controller="Books" asp-action="Get">Return to Books</a>
+<!DOCTYPE html>
+<html lang="en">
 
-  </div>
-</div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Information</title>
+  <style>
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .label {
+      font-weight: bold;
+    }
+
+    .value {
+      margin-left: 10px;
+    }
+
+    .book-image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .login-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff6122;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <table style="width: 100%;">
+    <tr>
+      <td style="width: 50%;">
+        <h2>Book Information</h2>
+        <img src="@Url.Content(Model.Image)" alt="Book Image" class="book-image">
+        <p><span class="label">Name:</span> <span class="value">@Model.Name</span></p>
+        <p><span class="label">Description:</span> <span class="value">@Model.Description</span></p>
+        <p><span class="label">Author:</span> <span class="value">@Model.Author</span></p>
+        @if (Model.IsFinished == false)
+        {
+          <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+        }
+        else
+        {
+          <p class="card-text" style="color: green;">Finished</p>
+        }
+        <p style="color:blue;"><span class="label">Tag:</span> <span class="value">#@Model.tag</span></p>
+        <a href="@Url.Action("ReadBook", "Books", new { id = Model.Id })" class="btn btn-secondary">Read</a>
+        </div>
+      </td>
+      <td style="width: 50%; vertical-align: top;">
+          <h1>Comments</h1>
+          <input type="text" placeholder="Add your comment"></input>
+          <input type="submit" value="Submit" class="login-btn">
+      </td>
+    </tr>
+  </table>
+
+</body>
+
+</html>

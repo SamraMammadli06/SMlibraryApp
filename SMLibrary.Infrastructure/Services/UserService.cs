@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
@@ -34,7 +35,7 @@ namespace SMLibrary.Infrastructure.Services
             await userRepository.Delete(name);
         }
 
-       
+
         public async Task<IdentityUser?> FindUser(string UserName)
         {
             var user = await userRepository.FindUser(UserName);
@@ -54,7 +55,18 @@ namespace SMLibrary.Infrastructure.Services
             }
             return user;
         }
-
+        public async Task<UserCustomUser> GetCustomUser(string UserName)
+        {
+            var user = await userRepository.GetCustomUser(UserName);
+            return user;
+        }
+        public async Task Edit(UserCustomUser customUser)
+        {
+            await userRepository.Edit(customUser);
+        }
+        public async Task CreateCustomUser(UserCustomUser customUser){
+            await userRepository.CreateCustomUser(customUser);
+        }
         public async Task<IEnumerable<Book>> GetMyBooks(string UserName)
         {
             var books = await userRepository.GetMyBooks(UserName);

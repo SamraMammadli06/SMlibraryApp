@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SMLibrary.Core.Models;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Infrastructure.Data;
@@ -71,11 +72,32 @@ public class UserRepository : IUserRepository
         return books;
     }
 
-   
+    public async Task Edit(UserCustomUser customUser)
+    {
+        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName==customUser.UserName);
+        user.BannerColor = customUser.BannerColor;
+        user.ImageUrl = customUser.ImageUrl;
+        user.Description = customUser.Description;
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<UserCustomUser> GetCustomUser(string UserName)
+    {
+        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName==UserName);
+        return user;
+    }
+
     public async Task Delete(string name)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == name);
-        dbContext.Users.Remove(user);
+        if(user!=null){
+            dbContext.Users.Remove(user);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+    public async Task CreateCustomUser(UserCustomUser customUser)
+    {
+        await this.dbContext.UserCustomUsers.AddAsync(customUser);
         await dbContext.SaveChangesAsync();
     }
     public async Task<IdentityUser> FindUserbyId(int id)

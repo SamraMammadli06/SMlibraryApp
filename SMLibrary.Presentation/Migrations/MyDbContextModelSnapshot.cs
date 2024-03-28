@@ -220,6 +220,32 @@ namespace SMlibraryApp.Presentation.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SMLibrary.Core.Models.UserCustomUser", b =>
+                {
+                    b.Property<int>("UserCustomUserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserCustomUserId"));
+
+                    b.Property<string>("BannerColor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserCustomUserId");
+
+                    b.ToTable("UserCustomUsers");
+                });
+
             modelBuilder.Entity("SMLibraryApp.Core.Models.BookUserName", b =>
                 {
                     b.Property<int>("BookUserNameId")

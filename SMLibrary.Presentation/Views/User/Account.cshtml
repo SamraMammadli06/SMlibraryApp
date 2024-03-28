@@ -1,5 +1,6 @@
 @model IEnumerable<Book>
 
+
 @{
   ViewData["Title"] = "Account";
   bool IsAdmin = User.IsInRole("Admin");
@@ -9,51 +10,60 @@
 <div class="container">
   <div class="row justify-content-center">
     <div clas s="col-md-6">
-      <div class="card text-center" style="color: white; background-color: #343a40;">
+      <div class="card text-center" style="color: white; background-color: @ViewBag.customUser.BannerColor; ">
         <div class="card-body">
-          <h5 class="card-title">Welcome</h5>
-          <p class="card-text">Account Information:</p>
-          <p class="card-text">Name: @User.Identity.Name</p>
+          <div class="circular-image">
+            <img src="@ViewBag.customUser.ImageUrl" alt="Photo">
+          </div>
+          <h2 class="card-text">Name: @User.Identity.Name</h2>
+          <p class="card-text">Description: @ViewBag.customUser.Description</p>
           @if (!IsAdmin)
           {
-            <a href="@Url.Action("GetUserItems", "User")" class="btn btn-primary mt-3">Added Books</a>
+            <a href="@Url.Action("GetUserItems", "User")" class="btn btn-primary mt-3">Favorites</a>
           }
-          <a href="@Url.Action("ChangePassword", "Identity")" class="btn btn-primary mt-3">Change Password</a>
-          <a href="@Url.Action("Write", "Books")" class="btn btn-primary mt-3">Write Book</a>
         </div>
       </div>
     </div>
   </div>
   <h1 style="text-align: center;">My Books</h1>
-  <div class="row row-cols-1 row-cols-md-4 g-4">
-    @foreach (var item in Model)
-    {
-      <div class="col">
-        <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
-          <div class="card h-100">
-            <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
-            <div class="card-body">
-              <h5 class="card-title">@item.Name</h5>
-              <p class="card-text">Author: @item.Author</p>
-              <p class="card-text" style="color: gray;">@item.Description</p>
-              <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
-              @if (item.IsFinished == false)
-              {
-                <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
-                <a href="@Url.Action("ChangeBook", "Books", new { id = item.Id })" class="btn btn-secondary">Change</a>
-              }
-              else
-              {
-                <p class="card-text" style="color: green;">Finished</p>
-              }
-              <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    }
-  </div>
+  @if (Model is not null && Model.Count() != 0)
+  {
 
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      @foreach (var item in Model)
+      {
+        <div class="col">
+          <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
+            <div class="card h-100">
+              <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
+              <div class="card-body">
+                <h5 class="card-title">@item.Name</h5>
+                <p class="card-text">Author: @item.Author</p>
+                <p class="card-text" style="color: gray;">@item.Description</p>
+                <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
+                @if (item.IsFinished == false)
+                {
+                  <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+                  <a href="@Url.Action("ChangeBook", "Books", new { id = item.Id })" class="btn btn-secondary">Change</a>
+                }
+                else
+                {
+                  <p class="card-text" style="color: green;">Finished</p>
+                  <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>  
+                }
+                <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      }
+    </div>
+  }
+  else
+  {
+    <h1 style="color: orange; text-align:center;"> <a href="@Url.Action("Write", "Books")" style="color: orange; ">Write
+        your first Book</a></h1>
+  }
 </div>
 
 
@@ -77,3 +87,22 @@
       });
   }
 </script>
+
+<style>
+  .btn-primary {
+    background-color: #219ebc;
+    border-color: #219ebc;
+    color: #fff;
+  }
+  .circular-image {
+    width: 250px; 
+    height: 250px;
+    border-radius: 50%;
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    transform: translate(200%, 0%);
+  }
+</style>

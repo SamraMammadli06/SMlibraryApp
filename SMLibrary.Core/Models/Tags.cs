@@ -7,6 +7,6 @@ namespace SMLibrary.Core.Models;
 
 public enum Tag
 {
-    Adventure =1,Horror,Mystery,Romance,Poetry,Science,
+    Adventure =1,Horror,Mystery,Romance,Poetry,Science,Fantasy,Fiction
 }
 

@@ -1,0 +1,95 @@
+@model SMLibrary.Core.Models.UserCustomUser
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<div class="login-card">
+    <h1>@ViewData["Title"]</h1>
+    <form method="post" asp-action="Edit" class="login-form">
+        <div class="form-group">
+            <label asp-for="@Model.UserName">Username:</label>
+            <input type="text" asp-for="@Model.UserName" value="@Model.UserName" readonly>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.ImageUrl">Image URL:</label>
+            <input type="text" asp-for="@Model.ImageUrl">
+        </div>
+        <div class="form-group">
+            <div id="banner-color-container">
+                <label asp-for="@Model.BannerColor">Banner Color:</label>
+                <select asp-for="@Model.BannerColor">
+                    <option value="black">Black</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                    <option value="orange">Orange</option>
+                    <option value="brown">Brown</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.Description">Description:</label>
+            <textarea rows="5" asp-for="@Model.Description">@Model.Description</textarea>
+        </div>
+        <div class="form-group btn-container">
+            <input type="submit" value="Submit" class="login-btn">
+        </div>
+    </form>
+</div>
+
+<style>
+    .login-card {
+        max-width: 400px;
+        margin: 0;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-header h2 {
+        margin-bottom: 10px;
+    }
+
+    .login-form .form-group {
+        margin-bottom: 20px;
+    }
+
+    .login-form input[type="text"],
+    .login-form input[type="password"],
+    .login-form input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .login-form .btn-container {
+        position: relative;
+    }
+
+    .login-form .login-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #ff6122;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .login-form .login-btn:hover {
+        background-color: darkorange;
+    }
+
+    .form-links a {
+        color: #ff6122;
+        text-decoration: none;
+    }
+
+    .form-links span {
+        margin: 0 5px;
+    }
+</style>

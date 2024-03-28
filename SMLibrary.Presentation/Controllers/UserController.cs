@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 using SMLibrary.Presentation.Dtos;
 using SMlibraryApp.Core.Repository;
@@ -37,9 +38,10 @@ public class UserController : Controller
     public async Task<IActionResult> Account()
     {
         var books = await service.GetMyBooks(User.Identity.Name);
+        ViewBag.customUser =  await service.GetCustomUser(User.Identity.Name);
         return base.View(books);
     }
-   
+
     [HttpPost]
     [Authorize]
     [Route("[controller]/add/{id}")]
@@ -51,6 +53,22 @@ public class UserController : Controller
         await service.AddBookToUser(id, userLogin);
 
         return base.RedirectToAction("Get", "Books");
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Edit()
+    {
+        var user = await service.GetCustomUser(User.Identity.Name);
+        return View(user);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Edit([FromForm] UserCustomUser customUser)
+    {
+        await service.Edit(customUser);
+        return RedirectToAction("Account");
     }
 
 }

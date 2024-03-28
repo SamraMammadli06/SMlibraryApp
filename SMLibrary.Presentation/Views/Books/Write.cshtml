@@ -3,11 +3,27 @@
     newbook.IsFinished = true;
 }
 
+<style>
+    .form-group label {
+        color: orange;
+    }
+
+    .btn-primary {
+        background-color: orange;
+        border-color: orange;
+    }
+
+    .btn-primary:hover {
+        background-color: darkorange;
+        border-color: darkorange;
+    }
+</style>
+
 <div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form asp-controller="Books" asp-action="Write" enctype="multipart/form-data" method="post"
-                style="color: black;">
+    <form asp-controller="Books" asp-action="Write" enctype="multipart/form-data" method="post" style="color: black;">
+        <div class="row justify-content-center">
+            <!-- First Column -->
+            <div class="col-md-6">
                 <div class="form-group">
                     <label asp-for="@newbook.Name">Title: </label>
                     <input type="text" asp-for="@newbook.Name" class="form-control" required>
@@ -18,26 +34,24 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="@newbook.Author">Author: </label>
-                    <input asp-for=@newbook.Author type="text" class="form-control" value=@User.Identity.Name readonly>
+                    <input asp-for="@newbook.Author" type="text" class="form-control" value="@User.Identity.Name"
+                        readonly>
                 </div>
                 <div class="form-group">
                     <label asp-for="@newbook.Description">Description: </label>
                     <input type="text" asp-for="@newbook.Description" class="form-control">
                 </div>
-                <div class="form-group" id="textAreaGroup">
-                    <label asp-for="@newbook.Content">Content:</label>
-                    <textarea asp-for="@newbook.Content" class="form-control" rows="40"></textarea>
-                </div>
                 <br>
                 <div class="form-group">
                     <label asp-for="@newbook.tag">Tag: </label>
-                    <select id="category" asp-for="@newbook.tag">
+                    <select id="category" asp-for="@newbook.tag" class="form-control">
                         <option value="adventure">Adventure</option>
                         <option value="horror">Horror</option>
                         <option value="mystery">Mystery</option>
                         <option value="romance">Romance</option>
                         <option value="poetry">Poetry</option>
                         <option value="science">Science</option>
+                        <option value="science">Fiction</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -45,11 +59,16 @@
                     <label><input type="radio" asp-for="@newbook.IsFinished" value="true" required> Finished</label>
                     <label><input type="radio" asp-for="@newbook.IsFinished" value="false" required> Ongoing</label>
                 </div>
+                <button type="submit" class="btn btn-primary">Publish</button>
+            </div>
 
-                <input type="hidden" id="ContentFile" name="ContentFile" value="">
-                <br>
-                <button type="submit" class="btn btn-primary">Add</button>
-            </form>
+            <div class="col-md-6">
+                <div class="form-group" id="textAreaGroup">
+                    <label asp-for="@newbook.Content">Content:</label>
+                    <textarea asp-for="@newbook.Content" style="resize:none" class="form-control" rows="25" cols="50"
+                        placeholder="Write your book" required></textarea>
+                </div>
+            </div>
         </div>
-    </div>
+    </form>
 </div>

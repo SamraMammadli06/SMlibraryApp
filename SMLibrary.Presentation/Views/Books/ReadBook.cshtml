@@ -1,10 +1,8 @@
 @model Book
-@{
-    ViewData["Title"] = "PDF Viewer";
-}
+
 
 <div id="pdf-container">
-    <p class="card-text">Title: @Model.Name</p>
+    <h1 class="card-text" style="color: darkorange;">@Model.Name</h1>
     @if (Model.Content.Contains(".pdf"))
     {
         <canvas id="pdf-render"></canvas>
@@ -17,7 +15,7 @@
         }
         
         string content = File.ReadAllText(Model.Content);
-        <textarea rows="40" class="form-control" readonly>@content</textarea>
+        <textarea rows="30" class="form-control" readonly>@content</textarea>
 
     }
     <a href="@Url.Action("Get", "Books")" class="btn btn-primary mt-3">Return to Books</a>

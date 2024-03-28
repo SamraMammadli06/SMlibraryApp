@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 using SMLibrary.Presentation.Dtos;
 using SMlibraryApp.Core.Repository;
@@ -94,6 +95,13 @@ public class IdentityController : Controller
             await UserManager.AddToRoleAsync(newUser, role.Name);
         }
 
+        var customUser = new UserCustomUser(){
+            UserName = registerDto.UserName,
+            BannerColor = "orange",
+            Description = "...",
+            ImageUrl = "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+        };
+        await service.CreateCustomUser(customUser);
         return RedirectToAction("Login");
     }
 
