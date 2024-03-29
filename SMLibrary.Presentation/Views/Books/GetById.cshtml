@@ -53,7 +53,14 @@
         <img src="@Url.Content(Model.Image)" alt="Book Image" class="book-image">
         <p><span class="label">Name:</span> <span class="value">@Model.Name</span></p>
         <p><span class="label">Description:</span> <span class="value">@Model.Description</span></p>
-        <p><span class="label">Author:</span> <span class="value">@Model.Author</span></p>
+        <p><span class="label">Author:</span> 
+              @if(Model.Author.Split(" ").Count()==1){
+                <a class="value" href="@Url.Action("GetUser","User",new{name=@Model.Author})" style="text-decoration: none;">@Model.Author</a>
+              }
+              else{
+                <span class="value">@Model.Author</span>
+              }
+        </p>
         @if (Model.IsFinished == false)
         {
           <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>

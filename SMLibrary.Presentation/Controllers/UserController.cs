@@ -32,6 +32,14 @@ public class UserController : Controller
         await service.Delete(name);
         return base.Ok();
     }
+    
+    [HttpPost]
+    [Route("/[controller]/delete/{id}")]
+    public async Task<IActionResult>  DeleteBookbyUser(int id)
+    {
+        await service.DeleteBookbyUser(User.Identity.Name,id);
+         return base.RedirectToAction("Get", "Books");
+    }
 
     [HttpGet]
     [Authorize]
@@ -60,6 +68,16 @@ public class UserController : Controller
     public async Task<IActionResult> Edit()
     {
         var user = await service.GetCustomUser(User.Identity.Name);
+        return View(user);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("[controller]/[action]/{name}")]
+    public async Task<IActionResult> GetUser(string name)
+    {
+        var user = await service.GetUser(name);
+        ViewBag.Books = await service.GetMyBooks(name);
         return View(user);
     }
 

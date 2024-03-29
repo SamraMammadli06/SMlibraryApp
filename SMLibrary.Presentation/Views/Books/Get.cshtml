@@ -1,3 +1,5 @@
+@model IEnumerable<Book>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @{
   bool IsAuth = base.User.Identity.IsAuthenticated;
   bool IsAdmin = User.IsInRole("Admin");
@@ -7,11 +9,15 @@
 {
   <a href="@Url.Action("Create", "Books")" class="btn btn-primary">Create Book</a>
 }
+
+
+
 <div class="card-container">
   @foreach (var item in @Model)
   {
     @if (item.Author != base.User.Identity.Name)
     {
+
       string truncatedDescription = string.Empty;
 
       if (!string.IsNullOrWhiteSpace(item.Description))
@@ -29,6 +35,16 @@
 
       <div class="card">
         <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
+          @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
+          {
+            <button asp-controller="User" asp-action="DeleteBookbyUser" asp-route-id="@item.Id" style="background-color: white; border:0px white solid; font-size: 24px;"><span
+                class="fa fa-star checked"></span></button>
+          }
+          else
+          {
+            <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id" style="background-color: white;border:0px white solid; font-size: 24px;"><span
+                class="fa fa-star not-checked"></span></button>
+          }
           <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
           <div class="card-body">
             <h5 class="card-title">@item.Name</h5>
@@ -46,9 +62,8 @@
             @if (IsAuth && !IsAdmin)
             {
               <a href="@Url.Action("GetById", "Books", new { id = item.Id })" class="btn btn-secondary">Show More</a>
-              <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id" class="btn btn-primary">Add
-                book</button>
             }
+
             @if (IsAdmin)
             {
               <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
@@ -86,5 +101,12 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+  }
+
+  .checked {
+    color: orange;
+  }
+  .not-checked{
+    color:gray;
   }
 </style>

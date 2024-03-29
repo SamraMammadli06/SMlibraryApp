@@ -22,6 +22,7 @@ public class BooksController : Controller
     public async Task<IActionResult> Get()
     {
         var books = await service.GetBooks();
+        ViewBag.MyBooks = await userService.GetBooksbyUser(User.Identity.Name);
         return View(books);
     }
 

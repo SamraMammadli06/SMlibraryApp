@@ -16,4 +16,6 @@ public interface IUserRepository
     public Task Edit(UserCustomUser customUser);
     public Task<UserCustomUser> GetCustomUser(string UserName);
     public Task CreateCustomUser(UserCustomUser customUser);
+    public Task<UserCustomUser> GetUser(string UserName);
+    public Task DeleteBookbyUser(string UserName, int Id);
 }

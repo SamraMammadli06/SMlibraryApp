@@ -29,6 +29,22 @@ public class UserRepository : IUserRepository
         return newUser;
     }
 
+    public async Task DeleteBookbyUser(string UserName, int Id)
+    {
+        var book = await this.dbContext.BookUserNames.FirstOrDefaultAsync(book => book.BookId == Id);
+        var check = dbContext.BookUserNames.Any(ub => ub.UserName == UserName && ub.BookId == Id);
+        System.Console.WriteLine("hhh: "+check);
+        if (book != null)
+        {
+            if (check)
+            {
+                dbContext.BookUserNames.Remove(book);
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+    }
+
     public IEnumerable<IdentityUser> GetUsers()
     {
         return this.dbContext.Users.AsEnumerable();
@@ -36,10 +52,11 @@ public class UserRepository : IUserRepository
     public async Task<bool> AddBookToUser(int id, string UserName)
     {
         var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
-        var check =  dbContext.BookUserNames.Any(ub => ub.UserName == UserName && ub.BookId == id);
+        var check = dbContext.BookUserNames.Any(ub => ub.UserName == UserName && ub.BookId == id);
         if (book != null)
         {
-            if(!check){
+            if (!check)
+            {
                 var bookUserName = new BookUserName
                 {
                     BookId = id,
@@ -59,8 +76,9 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<IEnumerable<Book>> GetMyBooks(string UserName){
-        var books  = dbContext.Books.Where(book=>book.Author==UserName).AsEnumerable<Book>();
+    public async Task<IEnumerable<Book>> GetMyBooks(string UserName)
+    {
+        var books = dbContext.Books.Where(book => book.Author == UserName).AsEnumerable<Book>();
         return books;
     }
     public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
@@ -72,9 +90,15 @@ public class UserRepository : IUserRepository
         return books;
     }
 
+    public async Task<UserCustomUser> GetUser(string UserName)
+    {
+        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == UserName);
+        return user;
+    }
+
     public async Task Edit(UserCustomUser customUser)
     {
-        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName==customUser.UserName);
+        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == customUser.UserName);
         user.BannerColor = customUser.BannerColor;
         user.ImageUrl = customUser.ImageUrl;
         user.Description = customUser.Description;
@@ -83,14 +107,15 @@ public class UserRepository : IUserRepository
 
     public async Task<UserCustomUser> GetCustomUser(string UserName)
     {
-        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName==UserName);
+        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == UserName);
         return user;
     }
 
     public async Task Delete(string name)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == name);
-        if(user!=null){
+        if (user != null)
+        {
             dbContext.Users.Remove(user);
             await dbContext.SaveChangesAsync();
         }

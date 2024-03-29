@@ -64,7 +64,8 @@ namespace SMLibrary.Infrastructure.Services
         {
             await userRepository.Edit(customUser);
         }
-        public async Task CreateCustomUser(UserCustomUser customUser){
+        public async Task CreateCustomUser(UserCustomUser customUser)
+        {
             await userRepository.CreateCustomUser(customUser);
         }
         public async Task<IEnumerable<Book>> GetMyBooks(string UserName)
@@ -81,12 +82,22 @@ namespace SMLibrary.Infrastructure.Services
             return books;
         }
 
+        public async Task DeleteBookbyUser(string UserName,int Id)
+        {
+            await userRepository.DeleteBookbyUser(UserName,Id);
+        }
+
         public IEnumerable<IdentityUser> GetUsers()
         {
             var users = userRepository.GetUsers();
             return users;
         }
 
+        public async Task<UserCustomUser> GetUser(string UserName)
+        {
+            var user = await userRepository.GetUser(UserName);
+            return user;
+        }
 
     }
 }

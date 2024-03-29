@@ -99,7 +99,7 @@ public class IdentityController : Controller
             UserName = registerDto.UserName,
             BannerColor = "orange",
             Description = "...",
-            ImageUrl = "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
+            ImageUrl = "https://img.freepik.com/premium-vector/user-profile-icon-flat-style-member-avatar-vector-illustration-isolated-background-human-permission-sign-business-concept_157943-15752.jpg"
         };
         await service.CreateCustomUser(customUser);
         return RedirectToAction("Login");
