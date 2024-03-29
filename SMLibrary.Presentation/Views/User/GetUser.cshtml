@@ -21,8 +21,19 @@
         </div>
     </div>
 </div>
-<h2 style="text-align: center;">@Model.UserName.ToUpper()'s Books</h2>
-<div class="row row-cols-1 row-cols-md-4 g-4">
+
+<div class="container">
+    <div class="row ">
+        <div class="col-md-6 d-flex justify-content-between">
+            <h2 id="booksHeader" onclick="toggle_Books()" style="cursor: pointer;border-bottom: 7px solid orange;">
+                @Model.UserName.ToUpper()'s Books
+            </h2>
+            <h2 id="commentsHeader" onclick="toggle_Cooments()" style="cursor: pointer;">Comments</h2>
+        </div>
+    </div>
+</div>
+
+<div id="booksSection" class="row row-cols-1 row-cols-md-4 g-4" style="display: block;">
     @foreach (var item in @ViewBag.Books)
     {
         <div class="col">
@@ -43,15 +54,38 @@
                             <p class="card-text" style="color: green;">Finished</p>
                         }
                         <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
-                        <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id" class="btn btn-primary">Add
-                book</button>
+                        <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id"
+                            class="btn btn-primary">Add
+                            book</button>
                     </div>
                 </div>
             </form>
         </div>
     }
 </div>
+<div>
 
+    <div id="commentsSection" style="display: none;">
+
+        @if (ViewBag.Comments is null)
+        {
+            <h2>No Comments</h2>
+        }
+
+        else
+        {
+            foreach (var Comment in ViewBag.Comments)
+            {
+                <div style="border: 1px solid orange;">
+                    <p>User: @Comment.Sender</p>
+                    <p>Book: @Comment.Book.Name</p>
+                    <p>@Comment.Text</p>
+                </div>
+            }
+        }
+
+    </div>
+</div>
 
 <style>
     .btn-primary {
@@ -72,3 +106,34 @@
         transform: translate(200%, 0%);
     }
 </style>
+
+<script>
+    function toggle_Books() {
+        var x = document.getElementById("booksSection");
+        var hc = document.getElementById("commentsHeader");
+        var h = document.getElementById("booksHeader");
+        var y = document.getElementById("commentsSection");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            h.style.borderBottom = "7px solid orange";
+            hc.style.borderBottom = "0px solid white";
+            y.style.display = "none";
+        } else {
+            x.style.display = "none";
+        }
+    }
+    function toggle_Cooments() {
+        var x = document.getElementById("commentsSection");
+        var h = document.getElementById("commentsHeader");
+        var hb = document.getElementById("booksHeader");
+        var y = document.getElementById("booksSection");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            h.style.borderBottom = "7px solid orange";
+            hb.style.borderBottom = "0px solid white";
+            y.style.display = "none";
+        } else {
+            x.style.display = "none";
+        }
+    }
+</script>

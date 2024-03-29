@@ -81,6 +81,12 @@ public class UserRepository : IUserRepository
         var books = dbContext.Books.Where(book => book.Author == UserName).AsEnumerable<Book>();
         return books;
     }
+
+    public async Task<IEnumerable<Comment>> GetMyComments(string UserName)
+    {
+        var comments = dbContext.Comments.Where(book => book.Book.Author == UserName).AsEnumerable<Comment>();
+        return comments;
+    }
     public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
     {
         var userBook = await dbContext.BookUserNames

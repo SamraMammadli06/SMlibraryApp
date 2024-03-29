@@ -81,7 +81,10 @@ namespace SMLibrary.Infrastructure.Services
 
             return books;
         }
-
+        public async Task<IEnumerable<Comment>> GetMyComments(string UserName){
+            var comments = await userRepository.GetMyComments(UserName);
+            return comments;
+        }
         public async Task DeleteBookbyUser(string UserName,int Id)
         {
             await userRepository.DeleteBookbyUser(UserName,Id);

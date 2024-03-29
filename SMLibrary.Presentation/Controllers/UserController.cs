@@ -78,6 +78,7 @@ public class UserController : Controller
     {
         var user = await service.GetUser(name);
         ViewBag.Books = await service.GetMyBooks(name);
+        ViewBag.Comments = await service.GetMyComments(name);
         return View(user);
     }
 
