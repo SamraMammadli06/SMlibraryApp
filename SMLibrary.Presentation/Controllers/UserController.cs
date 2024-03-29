@@ -31,6 +31,7 @@ public class UserController : Controller
     public async Task<IActionResult> Delete(string name)
     {
         await service.Delete(name);
+        
         return base.Ok();
     }
 
@@ -90,6 +91,7 @@ public class UserController : Controller
             var user = await service.GetUser(name);
             ViewBag.Books = await service.GetMyBooks(name);
             ViewBag.Comments = await service.GetMyComments(name);
+            ViewBag.MyBooks = await service.GetBooksbyUser(User.Identity.Name);
             return View(user);
         }
         catch (Exception)

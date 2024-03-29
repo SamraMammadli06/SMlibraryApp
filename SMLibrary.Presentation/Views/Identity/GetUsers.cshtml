@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Identity
 @model IEnumerable<IdentityUser>
 
+<h1 style="text-align: center;">All Users</h1>
+
 <div class="container">
     <div class="grid">
         @foreach (var user in Model)
@@ -8,7 +10,7 @@
             @if (!user.UserName.Contains("admin"))
             {
                 <form id="deleteForm-@user.UserName" asp-controller="User" asp-route-name="@user.UserName" asp-action="Delete">
-                    <div class="card mb-3" style="max-width: 200px;">
+                    <div class="card mb-3">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Name: @user.UserName</h5>
@@ -26,14 +28,12 @@
 <style>
     .container {
         display: flex;
-        justify-content: center;
     }
 
     .grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        /* Display in 4 columns */
-        gap: 20px;
+        gap: 10px;
     }
 
     .card {
@@ -42,13 +42,6 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .card-body {
-        padding: 15px;
-    }
-
-    .btn {
-        margin: 10px;
-    }
 </style>
 
 <script>

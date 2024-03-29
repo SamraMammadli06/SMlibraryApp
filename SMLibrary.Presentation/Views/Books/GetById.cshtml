@@ -85,8 +85,13 @@
         {
           foreach (var Comment in ViewBag.Comments)
           {
-            <div style="border: 3px solid orange;">
-              <p>@Comment.Sender</p>
+            <div style="text-align:center;border: 3px solid orange;">
+               @if(Comment.Sender!=User.Identity.Name){
+                <a class="value" href="@Url.Action("GetUser","User",new{name=Comment.Sender})" style="text-decoration: none;">@Html.Raw("@")@Comment.Sender</a>
+              }
+              else{
+                <p>@Html.Raw("@")@Comment.Sender</p>
+              }
               <p>@Comment.Text</p>
             </div>
             <br>

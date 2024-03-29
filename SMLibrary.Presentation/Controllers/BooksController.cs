@@ -26,6 +26,7 @@ public class BooksController : Controller
     }
 
     [HttpGet]
+    [Authorize]
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> GetById(int id)
     {

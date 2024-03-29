@@ -102,21 +102,25 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task Edit(UserCustomUser customUser,string name)
+    public async Task Edit(UserCustomUser customUser, string name)
     {
         var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == name);
-        if(user is not null){
+        if (user is not null)
+        {
             user.BannerColor = customUser.BannerColor;
-            if(string.IsNullOrWhiteSpace(customUser.ImageUrl) && !string.IsNullOrWhiteSpace(user.ImageUrl)){
+            if (string.IsNullOrWhiteSpace(customUser.ImageUrl) && !string.IsNullOrWhiteSpace(user.ImageUrl))
+            {
                 user.ImageUrl = user.ImageUrl;
             }
-            else{
+            else
+            {
                 user.ImageUrl = customUser.ImageUrl;
             }
             user.Description = customUser.Description;
             await dbContext.SaveChangesAsync();
         }
-        else{
+        else
+        {
             throw new ArgumentNullException();
         }
     }
@@ -130,9 +134,30 @@ public class UserRepository : IUserRepository
     public async Task Delete(string name)
     {
         var user = await dbContext.Users.FirstOrDefaultAsync(u => u.UserName == name);
+        var books = dbContext.Books.Where(u => u.Author == name);
+        var customUser = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == name);
+        var bookUser = dbContext.BookUserNames.Where(u => u.UserName == name);
         if (user != null)
         {
             dbContext.Users.Remove(user);
+            if (books is not null)
+            {
+                foreach (var book in books)
+                {
+                    dbContext.Books.Remove(book);
+                }
+            }
+            if (customUser is not null)
+            {
+                dbContext.UserCustomUsers.Remove(customUser);
+            }
+            if (bookUser is not null)
+            {
+                foreach (var book in bookUser)
+                {
+                    dbContext.BookUserNames.Remove(book);
+                }
+            }
             await dbContext.SaveChangesAsync();
         }
     }

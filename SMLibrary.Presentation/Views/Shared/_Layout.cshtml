@@ -46,20 +46,23 @@
                         asp-action="GetUsers">Users</a>
                 }
 
-                @if (isAuth && !IsAdmin)
+                @if (isAuth)
                 {
                     <div class="nav-item nav-link dropdown">
                         <a style="text-decoration: none; color: black" class="dropbtn">Account</a>
                         <div class="dropdown-content">
                             <a style="color: black;" class="nav-item nav-link" asp-controller="User"
                                 asp-action="Account">Profile</a>
-                            <a href="@Url.Action("ChangePassword", "Identity")"> Change
+                            <a style="color: black;" class="nav-item nav-link" asp-controller="User"
+                                asp-action="Edit">Edit</a>
+                            <a href="@Url.Action("ChangePassword", "Identity")">Change
                                 Password</a>
-                            <a href="@Url.Action("Edit", "User")"> Edit Profile</a>
                         </div>
                     </div>
-                    <a style="color: black;" class="nav-item nav-link" asp-controller="Books"
-                        asp-action="Write">Write</a>
+                    @if(!IsAdmin){
+                        <a style="color: black;" class="nav-item nav-link" asp-controller="Books"
+                            asp-action="Write">Write</a>
+                    }
                 }
                 @if (!isAuth)
                 {

@@ -1,6 +1,11 @@
 @model SMLibrary.Core.Models.UserCustomUser
+
 @{
     ViewData["Title"] = "User Account";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+@{
+    bool IsAuth = base.User.Identity.IsAuthenticated;
 }
 
 <h1 style="text-align: center;">@ViewData["Title"]</h1>
@@ -37,29 +42,67 @@
     @foreach (var item in @ViewBag.Books)
     {
         <div class="col">
-            <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
-                <div class="card h-100">
-                    <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text">Author: @item.Author</p>
-                        <p class="card-text" style="color: gray;">@item.Description</p>
-                        <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
-                        @if (item.IsFinished == false)
+            @if (item.Author != base.User.Identity.Name)
+            {
+                string truncatedDescription = string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(item.Description))
+                {
+                    string[] words = item.Description.Split(' ');
+                    if (words.Length <= 20)
+                    {
+                        truncatedDescription = string.Join(" ", words);
+                    }
+                    else
+                    {
+                        truncatedDescription = string.Join(" ", words.Take(20)) + " ...";
+                    }
+                }
+
+                <div class="card">
+                    <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
+                        @if (IsAuth)
                         {
-                            <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+                            @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
+                            {
+                                <button asp-action="DeleteBookbyUser" asp-controller="User" asp-route-id="@item.Id"
+                                    style="background-color: white;border:0px white solid; font-size: 24px;" type="button"
+                                    onclick="submitDeleteFormBook('@item.Id')">
+                                    <span id="addstar-@item.Id" class="fa fa-star checked"></span>
+                                </button>
+                            }
+                            else
+                            {
+                                <button asp-action="AddBooktoUser" asp-controller="User" asp-route-id="@item.Id"
+                                    style="background-color: white;border:0px white solid; font-size: 24px;" type="button"
+                                    onclick="submitAddBookForm('@item.Id')">
+                                    <span id="addstar-@item.Id" class="fa fa-star not-checked"></span>
+                                </button>
+                            }
                         }
-                        else
-                        {
-                            <p class="card-text" style="color: green;">Finished</p>
-                        }
-                        <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
-                        <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id"
-                            class="btn btn-primary">Add
-                            book</button>
-                    </div>
+                        <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
+                        <div class="card-body">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text">Author: @item.Author</p>
+                            <p class="card-text" style="color: gray;">@truncatedDescription</p>
+                            <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
+                            @if (item.IsFinished == false)
+                            {
+                                <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+                            }
+                            else
+                            {
+                                <p class="card-text" style="color: green;">Finished</p>
+                            }
+                            @if (IsAuth)
+                            {
+                                <a href="@Url.Action("GetById", "Books", new { id = item.Id })" class="btn btn-secondary">Show
+                                    More</a>
+                            }
+                        </div>
+                    </form>
                 </div>
-            </form>
+            }
         </div>
     }
 </div>
@@ -108,6 +151,57 @@
 </style>
 
 <script>
+
+    function submitDeleteFormBook(itemId) {
+        fetch(`/User/deleteBook/${itemId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Book deleted successfully');
+                    const starIcon = document.getElementById(`addstar-${itemId}`);
+                    if (starIcon.classList.contains('checked')) {
+                        starIcon.classList.remove('checked');
+                        starIcon.classList.add('not-checked');
+                    }
+                    else if (starIcon.classList.contains('not-checked')) {
+                        starIcon.classList.remove('not-checked');
+                        starIcon.classList.add('checked');
+                    }
+                } else {
+                    console.error('Failed to delete book');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    function submitAddBookForm(itemId) {
+        fetch(`/User/add/${itemId}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Book added successfully');
+                    const starIcon = document.getElementById(`addstar-${itemId}`);
+                    if (starIcon.classList.contains('checked')) {
+                        starIcon.classList.remove('checked');
+                        starIcon.classList.add('not-checked');
+                    }
+                    else if (starIcon.classList.contains('not-checked')) {
+                        starIcon.classList.remove('not-checked');
+                        starIcon.classList.add('checked');
+                    }
+                } else {
+                    console.error('Failed to add book');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
     function toggle_Books() {
         var x = document.getElementById("booksSection");
         var hc = document.getElementById("commentsHeader");
@@ -137,3 +231,13 @@
         }
     }
 </script>
+
+<style>
+    .checked {
+    color: orange;
+  }
+
+  .not-checked {
+    color: gray;
+  }
+</style>

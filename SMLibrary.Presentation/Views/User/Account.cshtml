@@ -1,6 +1,5 @@
 @model IEnumerable<Book>
 
-
 @{
   ViewData["Title"] = "Account";
   bool IsAdmin = User.IsInRole("Admin");
@@ -17,15 +16,16 @@
           </div>
           <h2 class="card-text">Name: @User.Identity.Name</h2>
           <p class="card-text">Description: @ViewBag.customUser.Description</p>
-          @if (!IsAdmin)
-          {
-            <a href="@Url.Action("GetUserItems", "User")" class="btn btn-primary mt-3">Favorites</a>
-          }
+
+          <a href="@Url.Action("GetUserItems", "User")" class="btn btn-primary mt-3">Favorites</a>
+
         </div>
       </div>
     </div>
   </div>
-  <h1 style="text-align: center;">My Books</h1>
+  @if(!IsAdmin){
+    <h1 style="text-align: center;">My Books</h1>
+  }
   @if (Model is not null && Model.Count() != 0)
   {
 
@@ -49,7 +49,7 @@
                 else
                 {
                   <p class="card-text" style="color: green;">Finished</p>
-                  <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>  
+                  <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
                 }
                 <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
               </div>
@@ -61,8 +61,11 @@
   }
   else
   {
-    <h1 style="color: orange; text-align:center;"> <a href="@Url.Action("Write", "Books")" style="color: orange; ">Write
-        your first Book</a></h1>
+    if (!IsAdmin)
+    {
+      <h1 style="color: orange; text-align:center;"> <a href="@Url.Action("Write", "Books")" style="color: orange; ">Write
+          your first Book</a></h1>
+    }
   }
 </div>
 
@@ -94,11 +97,12 @@
     border-color: #219ebc;
     color: #fff;
   }
+
   .circular-image {
-    width: 250px; 
+    width: 250px;
     height: 250px;
     border-radius: 50%;
-    overflow: hidden; 
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;

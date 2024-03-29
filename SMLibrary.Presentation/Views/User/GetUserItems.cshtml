@@ -5,7 +5,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 @{
   bool IsAuth = base.User.Identity.IsAuthenticated;
-  bool IsAdmin = User.IsInRole("Admin");
 }
 
 @if (Model is not null && Model.Count() != 0)
@@ -31,7 +30,7 @@
         }
 
         <div class="card" id="card-@item.Id">
-            @if (IsAuth && !IsAdmin)
+            @if (IsAuth )
             {
               @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
               {
@@ -60,7 +59,7 @@
               {
                 <p class="card-text" style="color: green;">Finished</p>
               }
-              @if (IsAuth && !IsAdmin)
+              @if (IsAuth )
               {
                 <a href="@Url.Action("GetById", "Books", new { id = item.Id })" class="btn btn-secondary">Show More</a>
               }

@@ -32,7 +32,7 @@
 
         <div class="card">
           <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
-            @if (IsAuth && !IsAdmin)
+            @if (IsAuth )
             {
               @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
               {
@@ -65,7 +65,7 @@
               {
                 <p class="card-text" style="color: green;">Finished</p>
               }
-              @if (IsAuth && !IsAdmin)
+              @if (IsAuth )
               {
                 <a href="@Url.Action("GetById", "Books", new { id = item.Id })" class="btn btn-secondary">Show More</a>
               }
