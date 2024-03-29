@@ -1,4 +1,5 @@
 @model Book
+
 @{
   string comment = string.Empty;
 }
@@ -45,7 +46,6 @@
 </head>
 
 <body>
-
   <table style="width: 100%;">
     <tr>
       <td style="width: 50%;">
@@ -55,7 +55,7 @@
         <p><span class="label">Description:</span> <span class="value">@Model.Description</span></p>
         <p><span class="label">Author:</span> 
               @if(Model.Author.Split(" ").Count()==1){
-                <a class="value" href="@Url.Action("GetUser","User",new{name=@Model.Author})" style="text-decoration: none;">@Model.Author</a>
+                <a class="value" href="@Url.Action("GetUser","User",new{name=Model.Author})" style="text-decoration: none;">@Model.Author</a>
               }
               else{
                 <span class="value">@Model.Author</span>
@@ -85,22 +85,22 @@
         {
           foreach (var Comment in ViewBag.Comments)
           {
-            <div style="border: 1px solid orange;">
-              <p>User: @Comment.Sender</p>
+            <div style="border: 3px solid orange;">
+              <p>@Comment.Sender</p>
               <p>@Comment.Text</p>
             </div>
+            <br>
           }
         }
         <br>
         <br>
         <form asp-action="AddComment" asp-route-author="@Model.Author" asp-route-id="@Model.Id" method="post">
-          <input asp-for="@comment" type="text" placeholder="Add your comment"></input>
+          <input asp-for="@comment" type="text" placeholder="Add your comment" required></input>
           <input type="submit" value="Submit" class="login-btn">
         </form>
       </td>
     </tr>
   </table>
-
 </body>
 
 </html>

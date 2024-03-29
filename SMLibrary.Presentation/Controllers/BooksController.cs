@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMLibrary.Core.Services;
@@ -30,15 +29,20 @@ public class BooksController : Controller
     [Route("[controller]/[action]/{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var book = await service.GetBookById(id);
-        if (book is null)
-        {
-            return NotFound($"Book with id {id} not found");
+        try{
+            var book = await service.GetBookById(id);
+            if (book is null || book.Id==0)
+            {
+                return base.NotFound($"Book with id {id} not found");
+            }
+            
+            var comments = await service.GetComments(id);
+            ViewBag.Comments = comments;
+            return View(book);
         }
-        
-        var comments = await service.GetComments(id);
-        ViewBag.Comments = comments;
-        return View(book);
+        catch(Exception ){
+            return base.NotFound($"Book with id {id} not found");
+        }
     }
     
     [HttpGet]
@@ -46,7 +50,7 @@ public class BooksController : Controller
     public async Task<IActionResult> ByTag(string tag)
     {
         var books = await service.GetBooksByTag(tag);
-
+        ViewBag.MyBooks = await userService.GetBooksbyUser(User.Identity.Name);
         return View(books);
     }
 

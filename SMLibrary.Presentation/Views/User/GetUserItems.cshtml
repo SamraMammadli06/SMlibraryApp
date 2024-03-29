@@ -34,7 +34,7 @@
             <p class="card-text">Author: @item.Author</p>
             <p class="card-text" style="color: gray;">@truncatedDescription</p>
             <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
-            <button asp-controller="Books" asp-action="ReadBook" asp-route-id="@item.Id">Read</button>
+            <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
           </div>
         </div>
       </div>

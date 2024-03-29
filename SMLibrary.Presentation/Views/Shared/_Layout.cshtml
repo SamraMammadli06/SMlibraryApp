@@ -18,7 +18,7 @@
 <header>
     <nav class="navbar navbar-expand-lg  navbar-light bg-light">
         <i class="fa fa-book" style="font-size:30px;color:red"></i>
-        <a class="navbar-brand" href="#">SMLib</a>
+        <a class="navbar-brand" >SMLib</a>
         <button class=" navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -30,16 +30,14 @@
                     <a style="color: black;" class="nav-item nav-link" asp-controller="Home" asp-action="Index">Home</a>
                 }
 
-                <a style="color: black;" class="nav-item nav-link" href="@Url.Action("Get", "Books")">Books</a>
                 <div class="nav-item nav-link dropdown">
-                    <a style="text-decoration: none; color: black" class="dropbtn">Browse</a>
+                    <a style="color: black; text-decoration:none;" class="dropbtn"
+                        href="@Url.Action("Get", "Books")">Books</a>
                     <div class="dropdown-content">
-                        <a href="/Books/ByTag/Adventure">Adventure</a>
-                        <a href="/Books/ByTag/Horror">Horror</a>
-                        <a href="/Books/ByTag/Fiction">Fiction</a>
-                        <a href="/Books/ByTag/Romance">Romance</a>
-                        <a href="/Books/ByTag/Poetry">Poetry</a>
-                        <a href="/Books/ByTag/Science">Science</a>
+                        @foreach (var tagname in Enum.GetNames<SMLibrary.Core.Models.Tag>())
+                        {
+                            <a href="/Books/ByTag/@tagname">@tagname</a>
+                        }
                     </div>
                 </div>
                 @if (IsAdmin)
@@ -51,16 +49,17 @@
                 @if (isAuth && !IsAdmin)
                 {
                     <div class="nav-item nav-link dropdown">
-                         <a style="text-decoration: none; color: black" class="dropbtn">Account</a>
+                        <a style="text-decoration: none; color: black" class="dropbtn">Account</a>
                         <div class="dropdown-content">
                             <a style="color: black;" class="nav-item nav-link" asp-controller="User"
                                 asp-action="Account">Profile</a>
                             <a href="@Url.Action("ChangePassword", "Identity")"> Change
                                 Password</a>
-                            <a  href="@Url.Action("Edit", "User")"> Edit Profile</a>
-                            <a  href="@Url.Action("Write", "Books")">Write</a>
+                            <a href="@Url.Action("Edit", "User")"> Edit Profile</a>
                         </div>
                     </div>
+                    <a style="color: black;" class="nav-item nav-link" asp-controller="Books"
+                        asp-action="Write">Write</a>
                 }
                 @if (!isAuth)
                 {

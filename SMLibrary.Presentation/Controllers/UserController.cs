@@ -2,9 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
-using SMLibrary.Presentation.Dtos;
-using SMlibraryApp.Core.Repository;
-
 namespace SMLibrary.Presentation.Controllers;
 
 
@@ -38,7 +35,7 @@ public class UserController : Controller
     public async Task<IActionResult>  DeleteBookbyUser(int id)
     {
         await service.DeleteBookbyUser(User.Identity.Name,id);
-         return base.RedirectToAction("Get", "Books");
+        return base.RedirectToAction("Get", "Books");
     }
 
     [HttpGet]
@@ -76,10 +73,15 @@ public class UserController : Controller
     [Route("[controller]/[action]/{name}")]
     public async Task<IActionResult> GetUser(string name)
     {
-        var user = await service.GetUser(name);
-        ViewBag.Books = await service.GetMyBooks(name);
-        ViewBag.Comments = await service.GetMyComments(name);
-        return View(user);
+        try{
+            var user = await service.GetUser(name);
+            ViewBag.Books = await service.GetMyBooks(name);
+            ViewBag.Comments = await service.GetMyComments(name);
+            return View(user);
+        }
+        catch(Exception){
+            return base.NotFound("This User is not found");
+        }
     }
 
     [HttpPost]

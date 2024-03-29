@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
     {
         var book = await this.dbContext.BookUserNames.FirstOrDefaultAsync(book => book.BookId == Id);
         var check = dbContext.BookUserNames.Any(ub => ub.UserName == UserName && ub.BookId == Id);
-        System.Console.WriteLine("hhh: "+check);
+        System.Console.WriteLine("hhh: " + check);
         if (book != null)
         {
             if (check)
@@ -105,6 +105,7 @@ public class UserRepository : IUserRepository
     public async Task Edit(UserCustomUser customUser)
     {
         var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == customUser.UserName);
+        user.UserName = customUser.UserName;
         user.BannerColor = customUser.BannerColor;
         user.ImageUrl = customUser.ImageUrl;
         user.Description = customUser.Description;

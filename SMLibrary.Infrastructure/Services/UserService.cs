@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
@@ -99,6 +95,9 @@ namespace SMLibrary.Infrastructure.Services
         public async Task<UserCustomUser> GetUser(string UserName)
         {
             var user = await userRepository.GetUser(UserName);
+            if(user is null){
+                throw new ArgumentNullException();
+            }
             return user;
         }
 
