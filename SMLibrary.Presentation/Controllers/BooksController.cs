@@ -90,10 +90,6 @@ public class BooksController : Controller
 
             newbook.Image = "/images/" + uniqueFileName1;
         }
-        else
-        {
-            newbook.Image = "/images/" + "notFound.png";
-        }
         if (!string.IsNullOrEmpty(newbook.Content))
         {
             string filesFolder = Path.Combine(webHostEnvironment.ContentRootPath, "Files");
@@ -111,7 +107,7 @@ public class BooksController : Controller
         }
 
         await service.ChangeBook(newbook);
-        return RedirectToAction("Get", "Books");
+        return RedirectToAction("Account", "User");
     }
 
 

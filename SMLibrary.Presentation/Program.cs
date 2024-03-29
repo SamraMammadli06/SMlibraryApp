@@ -1,11 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SMlibraryApp.Core.Repository;
-using SMlibraryApp.Core.Services;
-using SMlibraryApp.Infrastructure.Repository;
-using SMlibraryApp.Infrastructure.Services;
-using SMlibraryApp.Infrastructure.Data;
 using SMlibraryApp.Presentation.Middlewares;
 using SMLibrary.Infrastructure.Extensions;
 

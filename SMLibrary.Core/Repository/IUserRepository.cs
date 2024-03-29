@@ -13,7 +13,7 @@ public interface IUserRepository
     public Task<bool> AddBookToUser(int id, string UserName);
     public Task<IdentityUser?> FindUser(string UserName);
     public Task<IdentityUser> FindUserbyId(int id);
-    public Task Edit(UserCustomUser customUser);
+    public  Task Edit(UserCustomUser customUser,string name);
     public Task<UserCustomUser> GetCustomUser(string UserName);
     public Task CreateCustomUser(UserCustomUser customUser);
     public Task<UserCustomUser> GetUser(string UserName);

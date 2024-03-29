@@ -102,14 +102,23 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task Edit(UserCustomUser customUser)
+    public async Task Edit(UserCustomUser customUser,string name)
     {
-        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == customUser.UserName);
-        user.UserName = customUser.UserName;
-        user.BannerColor = customUser.BannerColor;
-        user.ImageUrl = customUser.ImageUrl;
-        user.Description = customUser.Description;
-        await dbContext.SaveChangesAsync();
+        var user = await dbContext.UserCustomUsers.FirstOrDefaultAsync(u => u.UserName == name);
+        if(user is not null){
+            user.BannerColor = customUser.BannerColor;
+            if(string.IsNullOrWhiteSpace(customUser.ImageUrl) && !string.IsNullOrWhiteSpace(user.ImageUrl)){
+                user.ImageUrl = user.ImageUrl;
+            }
+            else{
+                user.ImageUrl = customUser.ImageUrl;
+            }
+            user.Description = customUser.Description;
+            await dbContext.SaveChangesAsync();
+        }
+        else{
+            throw new ArgumentNullException();
+        }
     }
 
     public async Task<UserCustomUser> GetCustomUser(string UserName)

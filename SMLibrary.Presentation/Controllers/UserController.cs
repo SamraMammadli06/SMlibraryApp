@@ -8,8 +8,10 @@ namespace SMLibrary.Presentation.Controllers;
 public class UserController : Controller
 {
     private readonly IUserService service;
-    public UserController(IUserService service)
+    private readonly IWebHostEnvironment webHostEnvironment;
+    public UserController(IUserService service, IWebHostEnvironment webHostEnvironment)
     {
+        this.webHostEnvironment = webHostEnvironment;
         this.service = service;
     }
     [HttpGet]
@@ -19,23 +21,26 @@ public class UserController : Controller
     {
         var userLogin = User.Identity.Name;
         var books = await service.GetBooksbyUser(userLogin);
+        ViewBag.MyBooks = await service.GetBooksbyUser(User.Identity.Name);
         return base.View(books);
     }
 
     [HttpDelete]
+    [Authorize]
     [Route("/[controller]/[action]/{name}")]
     public async Task<IActionResult> Delete(string name)
     {
         await service.Delete(name);
         return base.Ok();
     }
-    
-    [HttpPost]
-    [Route("/[controller]/delete/{id}")]
-    public async Task<IActionResult>  DeleteBookbyUser(int id)
+
+    [HttpDelete]
+    [Authorize]
+    [Route("/[controller]/deleteBook/{id}")]
+    public async Task<IActionResult> DeleteBookbyUser(int id)
     {
-        await service.DeleteBookbyUser(User.Identity.Name,id);
-        return base.RedirectToAction("Get", "Books");
+        await service.DeleteBookbyUser(User.Identity.Name, id);
+        return base.Ok();
     }
 
     [HttpGet]
@@ -43,7 +48,7 @@ public class UserController : Controller
     public async Task<IActionResult> Account()
     {
         var books = await service.GetMyBooks(User.Identity.Name);
-        ViewBag.customUser =  await service.GetCustomUser(User.Identity.Name);
+        ViewBag.customUser = await service.GetCustomUser(User.Identity.Name);
         return base.View(books);
     }
 
@@ -57,15 +62,22 @@ public class UserController : Controller
             return BadRequest();
         await service.AddBookToUser(id, userLogin);
 
-        return base.RedirectToAction("Get", "Books");
+        return base.Ok();
     }
 
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> Edit()
     {
-        var user = await service.GetCustomUser(User.Identity.Name);
-        return View(user);
+        try
+        {
+            var user = await service.GetCustomUser(User.Identity.Name);
+            return View(user);
+        }
+        catch (Exception)
+        {
+            return base.BadRequest("Something Went Wrong");
+        }
     }
 
     [HttpGet]
@@ -73,22 +85,37 @@ public class UserController : Controller
     [Route("[controller]/[action]/{name}")]
     public async Task<IActionResult> GetUser(string name)
     {
-        try{
+        try
+        {
             var user = await service.GetUser(name);
             ViewBag.Books = await service.GetMyBooks(name);
             ViewBag.Comments = await service.GetMyComments(name);
             return View(user);
         }
-        catch(Exception){
+        catch (Exception)
+        {
             return base.NotFound("This User is not found");
         }
     }
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Edit([FromForm] UserCustomUser customUser)
+    public async Task<IActionResult> Edit([FromForm] UserCustomUser customUser, IFormFile imageFile)
     {
-        await service.Edit(customUser);
+        if (imageFile != null && imageFile.Length > 0)
+        {
+            string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "user");
+            string uniqueFileName1 = Path.GetFileName(imageFile.FileName);
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName1);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            customUser.ImageUrl = "/user/" + uniqueFileName1;
+        }
+        await service.Edit(customUser, User.Identity.Name);
         return RedirectToAction("Account");
     }
 

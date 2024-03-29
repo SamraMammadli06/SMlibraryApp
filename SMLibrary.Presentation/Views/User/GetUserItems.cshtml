@@ -2,47 +2,117 @@
 @{
   ViewData["Title"] = "GetUserItems";
 }
-@if (Model is not null && Model.Count() != 0)
-{
-
-  @foreach (var item in @Model)
-  {
-
-    string truncatedDescription = string.Empty;
-
-    if (!string.IsNullOrWhiteSpace(item.Description))
-    {
-      string[] words = item.Description.Split(' ');
-      if (words.Length <= 20)
-      {
-        truncatedDescription = string.Join(" ", words);
-      }
-      else
-      {
-        truncatedDescription = string.Join(" ", words.Take(20)) + " ...";
-      }
-    }
-
-    <div class="card mb-3" style="max-width: 400px;">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img src="@Url.Content(item.Image)" class="img-fluid rounded-start" alt="BookCover">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title"> @item.Name</h5>
-            <p class="card-text">Author: @item.Author</p>
-            <p class="card-text" style="color: gray;">@truncatedDescription</p>
-            <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
-            <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+@{
+  bool IsAuth = base.User.Identity.IsAuthenticated;
+  bool IsAdmin = User.IsInRole("Admin");
 }
 
-else{
+@if (Model is not null && Model.Count() != 0)
+{
+  <div class="card-container">
+    @foreach (var item in @Model)
+    {
+      @if (item.Author != base.User.Identity.Name)
+      {
+        string truncatedDescription = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(item.Description))
+        {
+          string[] words = item.Description.Split(' ');
+          if (words.Length <= 20)
+          {
+            truncatedDescription = string.Join(" ", words);
+          }
+          else
+          {
+            truncatedDescription = string.Join(" ", words.Take(20)) + " ...";
+          }
+        }
+
+        <div class="card" id="card-@item.Id">
+            @if (IsAuth && !IsAdmin)
+            {
+              @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
+              {
+                <form asp-controller="User" asp-route-id="@item.Id" asp-action="DeleteBookbyUser" id="deleteForm-@item.Id">
+                  <button style="background-color: white;border:0px white solid; font-size: 24px;" type="button" onclick="submitDeleteFormm('@item.Id')"><span class="fa fa-star checked"></span></button>
+                </form>
+              }
+              else
+              {
+                <form asp-controller="User" asp-route-id="@item.Id" asp-action="AddBooktoUser" method="post">
+                  <button style="background-color: white;border:0px white solid; font-size: 24px;" type="button" ><span class="fa fa-star not-checked"></span></button>
+                </form>
+              }
+            }
+            <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
+            <div class="card-body">
+              <h5 class="card-title">@item.Name</h5>
+              <p class="card-text">Author: @item.Author</p>
+              <p class="card-text" style="color: gray;">@truncatedDescription</p>
+              <p class="card-text" style="color: blue;">Tag: #@item.tag</p>
+              @if (item.IsFinished == false)
+              {
+                <p class="card-text" style="color:rgb(255, 193, 47)">Ongoing</p>
+              }
+              else
+              {
+                <p class="card-text" style="color: green;">Finished</p>
+              }
+              @if (IsAuth && !IsAdmin)
+              {
+                <a href="@Url.Action("GetById", "Books", new { id = item.Id })" class="btn btn-secondary">Show More</a>
+              }
+            </div>
+        </div>
+      }
+    }
+  </div>
+
+}
+
+else
+{
   <h1 style="color: orange; text-align:center; margin: 50px;">No books added to Favorites</h1>
 }
 </div>
+
+<script>
+  function submitDeleteFormm(Id) {
+    var form = document.getElementById('deleteForm-' + Id);
+    var card = document.getElementById('card-'+Id)
+    var formData = new FormData(form);
+    fetch(form.action + '?id=' + Id, {
+      method: 'DELETE',
+      body: formData
+    })
+      .then(response => {
+        if (response.ok) {
+          console.error(card)
+          card.remove();
+        } else {
+          console.error('Error deleting resource');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+</script>
+
+<style>
+  .card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .checked {
+    color: orange;
+  }
+
+  .not-checked {
+    color: gray;
+  }
+</style>

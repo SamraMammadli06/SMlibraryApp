@@ -37,7 +37,12 @@ public class BooksRepository : IBookRepository
         {
             oldBook.Name = book.Name;
             oldBook.Author = book.Author;
-            oldBook.Image = book.Image;
+            if(string.IsNullOrWhiteSpace(book.Image) && !string.IsNullOrWhiteSpace(oldBook.Image )){
+                oldBook.Image  = oldBook.Image ;
+            }
+            else{
+                oldBook.Image = book.Image;
+            }
             oldBook.Description = book.Description;
             oldBook.Content = book.Content;
             oldBook.IsFinished = book.IsFinished;

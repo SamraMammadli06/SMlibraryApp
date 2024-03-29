@@ -1,5 +1,5 @@
 @model IEnumerable<Book>
-  
+
 @{
   bool IsAuth = base.User.Identity.IsAuthenticated;
   bool IsAdmin = User.IsInRole("Admin");
@@ -32,17 +32,24 @@
 
         <div class="card">
           <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
-            @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
+            @if (IsAuth && !IsAdmin)
             {
-              <button asp-controller="User" asp-action="DeleteBookbyUser" asp-route-id="@item.Id"  
-                style="background-color: white; border:0px white solid; font-size: 24px;"><span
-                  class="fa fa-star checked"></span></button>
-            }
-            else
-            {
-              <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id"
-                style="background-color: white;border:0px white solid; font-size: 24px;"><span
-                  class="fa fa-star not-checked"></span></button>
+              @if (((IEnumerable<Book>)ViewBag.MyBooks).Any(b => b.Name == item.Name))
+              {
+                <button asp-action="DeleteBookbyUser" asp-controller="User" asp-route-id="@item.Id"
+                  style="background-color: white;border:0px white solid; font-size: 24px;" type="button"
+                  onclick="submitDeleteFormBook('@item.Id')">
+                  <span id="addstar-@item.Id" class="fa fa-star checked"></span>
+                </button>
+              }
+              else
+              {
+                <button asp-action="AddBooktoUser" asp-controller="User" asp-route-id="@item.Id"
+                  style="background-color: white;border:0px white solid; font-size: 24px;" type="button"
+                  onclick="submitAddBookForm('@item.Id')">
+                  <span id="addstar-@item.Id" class="fa fa-star not-checked"></span>
+                </button>
+              }
             }
             <img src="@Url.Content(item.Image)" class="card-img-top" alt="BookCover">
             <div class="card-body">
@@ -92,6 +99,55 @@ else
           form.remove();
         } else {
           console.error('Error deleting resource');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+  function submitDeleteFormBook(itemId) {
+    fetch(`/User/deleteBook/${itemId}`, {
+      method: 'DELETE'
+    })
+      .then(response => {
+        if (response.ok) {
+          console.log('Book deleted successfully');
+          const starIcon = document.getElementById(`addstar-${itemId}`);
+          if (starIcon.classList.contains('checked')) {
+            starIcon.classList.remove('checked');
+            starIcon.classList.add('not-checked');
+          }
+          else if (starIcon.classList.contains('not-checked')) {
+            starIcon.classList.remove('not-checked');
+            starIcon.classList.add('checked');
+          }
+        } else {
+          console.error('Failed to delete book');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  function submitAddBookForm(itemId) {
+    fetch(`/User/add/${itemId}`, {
+      method: 'POST'
+    })
+      .then(response => {
+        if (response.ok) {
+          console.log('Book added successfully');
+          const starIcon = document.getElementById(`addstar-${itemId}`);
+          if (starIcon.classList.contains('checked')) {
+            starIcon.classList.remove('checked');
+            starIcon.classList.add('not-checked');
+          }
+          else if (starIcon.classList.contains('not-checked')) {
+            starIcon.classList.remove('not-checked');
+            starIcon.classList.add('checked');
+          }
+        } else {
+          console.error('Failed to add book');
         }
       })
       .catch(error => {

@@ -56,9 +56,9 @@ namespace SMLibrary.Infrastructure.Services
             var user = await userRepository.GetCustomUser(UserName);
             return user;
         }
-        public async Task Edit(UserCustomUser customUser)
+        public async Task Edit(UserCustomUser customUser,string name)
         {
-            await userRepository.Edit(customUser);
+            await userRepository.Edit(customUser,name);
         }
         public async Task CreateCustomUser(UserCustomUser customUser)
         {
