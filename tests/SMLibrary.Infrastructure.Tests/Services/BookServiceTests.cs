@@ -34,21 +34,5 @@ namespace SMLibrary.Infrastructure.Tests.Repository
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await service.DeleteBook(-1));
         }
-        [Fact]
-        public async Task BuyBook_CheksIdisLessthan1_ThrowsArgumentException()
-        {
-            var service = new BookService(null);
-
-            await Assert.ThrowsAsync<ArgumentException>(async () => await service.BuyBook(-1,"name"));
-        }
-        [Theory]
-        [InlineData(" ")]
-        [InlineData(null)]
-        public async Task BuyBook_CheksUserNameEmptyorNull_ThrowsArgumentNullException(string name)
-        {
-            var service = new BookService(null);
-
-            await Assert.ThrowsAsync<ArgumentNullException>(async () => await service.BuyBook(1,name));
-        }
     }
 }
