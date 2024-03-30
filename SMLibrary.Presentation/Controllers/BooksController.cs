@@ -158,7 +158,7 @@ public class BooksController : Controller
 
 
         await service.Create(newbook);
-        return RedirectToAction("Get", "Books");
+        return RedirectToAction("Account", "User");
     }
 
     [HttpGet]
@@ -209,8 +209,9 @@ public class BooksController : Controller
 
             newbook.Content = "/pdf/" + uniqueFileName;
         }
+        newbook.IsFinished=true;
         await service.Create(newbook);
-        return RedirectToAction("Get", "Books");
+        return base.RedirectToAction("Get", "Books");
     }
 
     [HttpDelete]

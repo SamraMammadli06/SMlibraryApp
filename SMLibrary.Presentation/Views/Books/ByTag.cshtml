@@ -138,13 +138,13 @@ else
         if (response.ok) {
           console.log('Book added successfully');
           const starIcon = document.getElementById(`addstar-${itemId}`);
-          if (starIcon.classList.contains('checked')) {
-            starIcon.classList.remove('checked');
-            starIcon.classList.add('not-checked');
-          }
-          else if (starIcon.classList.contains('not-checked')) {
+          if (starIcon.classList.contains('not-checked')) {
             starIcon.classList.remove('not-checked');
             starIcon.classList.add('checked');
+          }
+          else{
+            starIcon.classList.remove('checked');
+            starIcon.classList.add('not-checked');
           }
         } else {
           console.error('Failed to add book');

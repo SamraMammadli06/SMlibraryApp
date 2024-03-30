@@ -119,9 +119,9 @@
         {
             foreach (var Comment in ViewBag.Comments)
             {
-                <div style="border: 1px solid orange;">
+                <div style="border: 1px solid orange; text-align:center">
                     <p>User: @Comment.Sender</p>
-                    <p>Book: @Comment.Book.Name</p>
+                    <p>Book Name: @Comment.Book.Name</p>
                     <p>@Comment.Text</p>
                 </div>
             }
@@ -185,13 +185,13 @@
                 if (response.ok) {
                     console.log('Book added successfully');
                     const starIcon = document.getElementById(`addstar-${itemId}`);
-                    if (starIcon.classList.contains('checked')) {
-                        starIcon.classList.remove('checked');
-                        starIcon.classList.add('not-checked');
-                    }
-                    else if (starIcon.classList.contains('not-checked')) {
+                    if (starIcon.classList.contains('not-checked')) {
                         starIcon.classList.remove('not-checked');
                         starIcon.classList.add('checked');
+                    }
+                    else {
+                        starIcon.classList.remove('checked');
+                        starIcon.classList.add('not-checked');
                     }
                 } else {
                     console.error('Failed to add book');
@@ -234,10 +234,10 @@
 
 <style>
     .checked {
-    color: orange;
-  }
+        color: orange;
+    }
 
-  .not-checked {
-    color: gray;
-  }
+    .not-checked {
+        color: gray;
+    }
 </style>

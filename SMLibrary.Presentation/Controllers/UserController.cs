@@ -4,7 +4,6 @@ using SMLibrary.Core.Models;
 using SMLibrary.Core.Services;
 namespace SMLibrary.Presentation.Controllers;
 
-
 public class UserController : Controller
 {
     private readonly IUserService service;
