@@ -1,21 +1,24 @@
-@model IEnumerable<System.Security.Claims.Claim>
-
 @{
     ViewData["Title"] = "Account";
-    var pos = 0;
+    bool IsAdmin = User.IsInRole("Admin");
 }
 
-<div class="text-center">
-    Account:
-    @foreach (var claim in Model)
-    {
-        <div>
-            @{
-                pos = claim.Type.LastIndexOf('/')+1;
-            }
-            <label>@claim.Type.Substring(pos, claim.Type.Length - pos).ToUpper():</label>
-            <label>@claim.Value</label>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div clas s= "col-md-6">
+            <div class="card text-center" style="color: white; background-color: #343a40;">
+                <div class="card-body">
+                    <h5 class="card-title">Welcome</h5>
+                    <p class="card-text">Account Information:</p>
+                    <p class="card-text">Name: @User.Identity.Name</p>
+                    <p class="card-text">Balance: @Model $</p>
+                    @if(!IsAdmin){
+                        <a href="@Url.Action("GetUserItems", "User")" class="btn btn-primary mt-3">My Books</a>
+                    }
+                     <a href="@Url.Action("AddBalance", "User")" class="btn btn-primary mt-3">Increase Balance</a>
+                </div>
+            </div>
         </div>
-    }
-    <a type="button" asp-action="GetUserItems">MyBooks</a>
+    </div>
 </div>

@@ -1,6 +1,7 @@
 namespace SMlibraryApp.Core.Models;
 public class Log
 {
+    public int LogId { get; set; }
     public int userId { get; set; }
     public string url { get; set; }
     public string methodType { get; set; }

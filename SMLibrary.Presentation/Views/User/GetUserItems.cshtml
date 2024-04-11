@@ -3,17 +3,22 @@
   ViewData["Title"] = "GetUserItems";
 }
 
-<h1 style="color: white;">@ViewData["Title"]</h1>
-<div class="card" style="width: 18rem;">
-  <ul class="border border-dark-subtle" class="list-group list-group-flush">
-    @foreach (var item in @Model)
-    {
-      <li class="list-group-item">
-        <a asp-controller="Books" asp-action="GetById" asp-route-id="@item.Id" id="ItemId-@item.Id">@item.Id</a>
-        <div>Name: @item.Name</div>
-        <div>Author: @item.Author</div>
-        <div>Price: @item.Price</div>
-      </li>
-    }
-  </ul>
+@foreach (var item in @Model)
+{
+  <div class="card mb-3" style="max-width: 400px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="@Url.Content(item.Image)" class="img-fluid rounded-start" alt="BookCover">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title"> @item.Name</h5>
+          <p class="card-text">Author: @item.Author</p>
+          <p class="card-text">Price: $@item.Price</p>
+          <button asp-controller="Books" asp-action="ReadBook" asp-route-id="@item.Id">Read</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
 </div>
