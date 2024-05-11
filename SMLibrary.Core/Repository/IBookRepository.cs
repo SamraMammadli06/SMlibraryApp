@@ -6,7 +6,8 @@ namespace SMlibraryApp.Core.Repository
     {
         public Task<IEnumerable<Book>> GetBooks();
         public Task<Book?> GetBookById(int id);
-        public Task<int> Create(Book newbook);
-        public Task<int> DeleteBook(int id);
+        public Task Create(Book newbook);
+        public Task DeleteBook(int id);
+        public  Task ChangeBook(int id,Book newbook);
     }
 }

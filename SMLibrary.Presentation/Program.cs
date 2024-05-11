@@ -1,73 +1,30 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using SMLibrary.Core.Repository;
-using SMLibrary.Infrastructure.Repository;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Core.Services;
 using SMlibraryApp.Infrastructure.Repository;
 using SMlibraryApp.Infrastructure.Services;
+using SMlibraryApp.Infrastructure.Data;
 using SMlibraryApp.Presentation.Middlewares;
+using System.Reflection;
+using SMLibrary.Core.Services;
+using SMLibrary.Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDataProtection();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/Identity/Login";
-        options.ReturnUrlParameter = "returnUrl";
-    });
+
+    
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IBookRepository>(provider =>
-{
-    const string connectionStringName = "LibraryDb";
-    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new Exception($"{connectionStringName} not found");
-    }
-
-    return new BooksRepository(connectionString);
-});
-
-builder.Services.AddScoped<IUserBooksRepository>(provider =>
-{
-    const string connectionStringName = "LibraryDb";
-    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new Exception($"{connectionStringName} not found");
-    }
-
-    return new UserBooksRepository(connectionString);
-});
-
-
-builder.Services.AddScoped<ILogRepository>(provider =>
-{
-    const string connectionStringName = "LibraryDb";
-    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new Exception($"{connectionStringName} not found");
-    }
-
-    return new LogRepository(connectionString);
-});
-
-builder.Services.AddScoped<IUserRepository>(provider =>
-{
-    const string connectionStringName = "LibraryDb";
-    string? connectionString = builder.Configuration.GetConnectionString(connectionStringName);
-    if (string.IsNullOrWhiteSpace(connectionString))
-    {
-        throw new Exception($"{connectionStringName} not found");
-    }
-
-    return new UserRepository(connectionString);
-});
+builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IBookRepository,BooksRepository>();
+builder.Services.AddScoped<IBookServices,BookServices>();
+builder.Services.AddScoped<ILogRepository,LogRepository>();
 
 builder.Services.AddTransient<ILogService>(provider =>
 {
@@ -76,6 +33,21 @@ builder.Services.AddTransient<ILogService>(provider =>
 });
 
 builder.Services.AddTransient<LoggingMiddleware>();
+
+builder.Services.AddDbContext<MyDbContext>(dbContextOptionsBuilder =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("LibraryDb");
+    dbContextOptionsBuilder.UseSqlServer(connectionString, options =>
+    {
+        options.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name);
+    });
+});
+
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+})
+    .AddEntityFrameworkStores<MyDbContext>();
 
 var app = builder.Build();
 

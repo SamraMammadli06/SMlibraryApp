@@ -1,0 +1,36 @@
+@model Book
+<div style="color: white;">
+    <form id="ChangeForm" asp-controller="Books" asp-action="Change">
+        <label asp-for="@Model.Name">Name: </label>
+        <input type="text" asp-for="@Model.Name">
+        <br>
+        <label asp-for="@Model.Author">Author: </label>
+        <input type="text" asp-for="@Model.Author">
+        <br>
+        <label asp-for="@Model.Price">Price: </label>
+        <input type="number" asp-for="@Model.Price">
+        <br>
+        <button onclick="submitChangeForm()" type="submit" asp-action="Change">Change</button>
+    </form>
+</div>
+
+
+<script>
+  function submitChangeForm(itemId) {
+    var form = document.getElementById('ChangeForm');
+    var formData = new FormData(form);
+    fetch(form.action + '?id=' + itemId, {
+      method: 'Put',
+      body: formData
+    })
+      .then(response => {
+        if (response.ok) {
+        } else {
+          console.error('Error deleting resource');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+</script>

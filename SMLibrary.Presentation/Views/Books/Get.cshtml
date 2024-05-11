@@ -1,23 +1,42 @@
-<a asp-action="Create" asp-controller="Books">Create Book</a>
+@{
+  bool IsAuth = base.User.Identity.IsAuthenticated;
+  bool IsAdmin = User.IsInRole("Admin");
+}
 
-<div class="card" style="width: 18rem;">
-  <ul class="border border-dark-subtle" class="list-group list-group-flush">
-    @foreach (var item in @Model)
-    {
-      <li class="list-group-item">
-        <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
-          <a asp-controller="Books" asp-action="GetById" asp-route-id="@item.Id" id="ItemId-@item.Id">@item.Id</a>
-          <div>Name: @item.Name</div>
-          <div>Author: @item.Author</div>
-          <div>Price: @item.Price</div>
-          <button type="button" onclick="submitDeleteForm('@item.Id')">Delete</button>
-          <button asp-controller="User" asp-action="AddBookToUser" asp-route-id = "@item.Id">Add book</button>
-        </form>
-      </li>
-    }
-  </ul>
-</div>
+@if (IsAdmin)
+{
+  <a href="@Url.Action("Create", "Books")" class="btn btn-primary">Create Book</a>
+}
 
+@foreach (var item in @Model)
+{
+  <form id="deleteForm-@item.Id" asp-controller="Books" asp-action="Delete">
+    <div class="card mb-3" style="max-width: 400px;">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="@Url.Content(item.Image)" class="img-fluid rounded-start" alt="BookCover">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title"> @item.Name</h5>
+            <p class="card-text">Author: @item.Author</p>
+            <p class="card-text">Price: $@item.Price</p>
+            @if (IsAuth && !IsAdmin)
+            {
+              <button asp-controller="User" asp-action="AddBookToUser" asp-route-id="@item.Id">Add book</button>
+              <a href="@Url.Action("ReadBook", "Books", new { id = item.Id })" class="btn btn-secondary">Read</a>
+            }
+            @if (IsAdmin)
+            {
+              <button type="button" onclick="submitDeleteForm('@item.Id')" class="btn btn-danger">Delete</button>
+              <a href="@Url.Action("Change", "Books", new { id = item.Id })" class="btn btn-secondary">Change Book</a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+}
 
 <script>//это из-за того что в forms нету метода delete
   function submitDeleteForm(itemId) {

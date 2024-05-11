@@ -1,17 +1,41 @@
-@model IEnumerable<Book>
+
 @{
   Book newbook = new Book();
 }
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-controller="Books" asp-action="Create" enctype="multipart/form-data" method="post" style="color: white;">
+                <div class="form-group">
+                    <label asp-for="@newbook.Name">Name: </label>
+                    <input type="text" asp-for="@newbook.Name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@newbook.Image">Image: </label>
+                    <input type="file" accept="image/*" name="imageFile" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@newbook.Author">Author: </label>
+                    <input type="text" asp-for="@newbook.Author" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@newbook.Price">Price: </label>
+                    <input type="number" asp-for="@newbook.Price" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="@newbook.Content">Content: </label>
+                    <input type="file" accept="application/pdf" id="Content" name="ContentFile" class="form-control">
+                </div>
+                <input type="hidden" id="ContentFileName" name="ContentFileName" value="">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-<form asp-controller="Books" asp-action="Create" method="post">
-    <label asp-for="@newbook.Name">Name: </label>
-    <input type="text" asp-for="@newbook.Name">
-    <br>
-    <label asp-for="@newbook.Author">Author: </label>
-    <input type="text" asp-for="@newbook.Author">
-    <br>
-    <label asp-for="@newbook.Price">Price: </label>
-    <input type="text" asp-for="@newbook.Price">
-    <br>
-    <input type="submit" value="Add">
-</form>
+<script>
+    document.getElementById('Content').addEventListener('change', function() {
+        var fileName = this.files[0].name;
+        document.getElementById('ContentFileName').value = fileName;
+    });
+</script>

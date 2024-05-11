@@ -1,48 +1,76 @@
-using System.Data.SqlClient;
-using Dapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SMlibraryApp.Core.Models;
 using SMlibraryApp.Core.Repository;
+using SMlibraryApp.Infrastructure.Data;
+using SMLibraryApp.Core.Models;
 
 namespace SMlibraryApp.Infrastructure.Repository;
 public class UserRepository : IUserRepository
 {
-    private readonly string ConnectionString;
-    public UserRepository(string ConnectionString)
+    private readonly MyDbContext dbContext;
+    private readonly UserManager<IdentityUser> userManager;
+
+    public UserRepository(MyDbContext dbContext, UserManager<IdentityUser> userManager)
     {
-        this.ConnectionString = ConnectionString;
+        this.userManager = userManager;
+        this.dbContext = dbContext;
     }
 
-    public async Task<int> Create(User newuser)
+    public async Task Create(IdentityUser newuser)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var count = await connection.ExecuteAsync(@"insert into Users (Email, Password,UserName) 
-            values(@Email, @Password,@UserName)",
-            param: new
+         await this.dbContext.Users.AddAsync(newuser);
+    }
+
+    public async Task<IdentityUser?> FindUser(string UserName)
+    {
+        var newUser = await this.dbContext.Users.FirstOrDefaultAsync(u => UserName== u.UserName);
+        return newUser;
+    }
+
+    public IEnumerable<IdentityUser> GetUsers()
+    {
+        return this.dbContext.Users.AsEnumerable();
+    }
+    public async Task AddBookToUser(int id, string UserName)
+    {
+        var book = await this.dbContext.Books.FirstOrDefaultAsync(book => book.Id == id);
+       
+        if (book != null)
+        {
+            var bookUserName = new BookUserName
             {
-                newuser.Email,
-                newuser.Password,
-                newuser.UserName,
-            });
-        return count;
+                BookId = id,
+                UserName = UserName
+            };
+
+            await dbContext.BookUserNames.AddAsync(bookUserName);
+
+            await dbContext.SaveChangesAsync();
+        }
+        else
+        {
+            throw new ArgumentException("Book not found", nameof(id));
+        }
     }
 
-    public async Task<IEnumerable<User>> GetUsers()
+
+    public async Task<IEnumerable<Book>> GetBooksbyUser(string UserName)
     {
-        using var connection = new SqlConnection(ConnectionString);
-        var users = await connection.QueryAsync<User>("select * from Users");
-        return users;
+        var userBook = await dbContext.BookUserNames
+          .Where(b => b.UserName == UserName).Select(i=>i.BookId)
+          .ToListAsync();
+        var books = dbContext.Books.Where(b => userBook.Contains(b.Id));
+        return books;
     }
 
-    public async Task<User?> FindUser(User user)
-    {
-        using var connection = new SqlConnection(ConnectionString);
-        var u = await connection.QueryFirstOrDefaultAsync<User>(@"select * from Users
-            where UserName = @UserName and Password = @Password",
-            param: new
-            {
-                user.UserName,
-                user.Password,
-            });
-        return u;
+    public async Task Delete(int id){
+        var user = await dbContext.Users.FirstOrDefaultAsync(u=>u.Id==id.ToString());
+        dbContext.Users.Remove(user);
+        await dbContext.SaveChangesAsync();
+    }
+    public async Task<IdentityUser> FindUserbyId(int id){
+        var user = await dbContext.Users.FirstOrDefaultAsync(u=>u.Id==id.ToString());
+        return user;
     }
 }

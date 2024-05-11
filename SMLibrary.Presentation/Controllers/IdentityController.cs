@@ -1,9 +1,9 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SMlibraryApp.Core.Models;
+using SMLibrary.Presentation.Dtos;
 using SMlibraryApp.Core.Repository;
 using SMlibraryApp.Presentation.Dtos;
 
@@ -11,9 +11,16 @@ namespace SMlibraryApp.Presentation.Controllers;
 public class IdentityController : Controller
 {
     private readonly IUserRepository userRepository;
-
-    public IdentityController(IUserRepository userRepository)
+    private readonly UserManager<IdentityUser> UserManager;
+    private readonly SignInManager<IdentityUser> signInManager;
+    private readonly RoleManager<IdentityRole> roleManager;
+    public IdentityController(IUserRepository userRepository, 
+    UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+    RoleManager<IdentityRole> roleManager)
     {
+        this.signInManager = signInManager;
+        this.roleManager = roleManager;
+        this.UserManager = userManager;
         this.userRepository = userRepository;
     }
     [HttpGet]
@@ -36,41 +43,34 @@ public class IdentityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Login([FromForm] LoginDto loginDto)
     {
-        var user = await userRepository.FindUser(new User()
+        var result = await signInManager.PasswordSignInAsync(loginDto.UserName, loginDto.Password, false, false);
+        if (result.Succeeded)
         {
-            UserName = loginDto.UserName,
-            Password = loginDto.Password,
-        });
-        if (user is null)
-            return base.BadRequest("Incorrect user information");
-        var claims = new Claim[] {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email)
-            };
-
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-        await base.HttpContext.SignInAsync(
-            scheme: CookieAuthenticationDefaults.AuthenticationScheme,
-            principal: new ClaimsPrincipal(claimsIdentity)
-        );
-
-        if (string.IsNullOrWhiteSpace(loginDto.ReturnUrl))
-            return base.RedirectToAction(controllerName: "Books", actionName: "Get");
-
-        return base.RedirectPermanent(loginDto.ReturnUrl);
+            return RedirectToAction("Get", "Books");
+        }
+        return View();
     }
 
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Register([FromForm] RegisterDto registerDto)
     {
-        var count = await userRepository.Create(new User()
+        var newUser = new IdentityUser
         {
             UserName = registerDto.UserName,
-            Email = registerDto.Email,
-            Password = registerDto.Password,
-        });
+        };
+        var result = await this.UserManager.CreateAsync(newUser, registerDto.Password);
+        if (result is null)
+        {
+            return BadRequest(result);
+        }
+         if(registerDto.UserName.Contains("admin")) {
+            var role = new IdentityRole {Name = "Admin"};
+            await roleManager.CreateAsync(role);
+
+            await UserManager.AddToRoleAsync(newUser, role.Name);
+        }
+
         return RedirectToAction("Login");
     }
 
@@ -78,7 +78,38 @@ public class IdentityController : Controller
     [Authorize]
     public async Task<IActionResult> LogOut()
     {
-        await base.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await this.signInManager.SignOutAsync();
+        return base.RedirectToAction(actionName: "Index", controllerName: "Home");
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChangePassword([FromForm] PassChangeDto changeDto)
+    {
+        var user = await userRepository.FindUser(changeDto.Username);
+        if(user is null){
+            return BadRequest("Incorrect username");
+        }
+        var check = await UserManager.CheckPasswordAsync(user,changeDto.oldPassword);
+        if(check is false){
+            return base.BadRequest("Incorrect password");
+        }
+        var newUser = await UserManager.ChangePasswordAsync(user,changeDto.oldPassword,changeDto.newPassword);
         return RedirectToAction("Login");
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> ChangePassword()
+    {
+        return base.View();
+    }
+    [HttpGet]
+    [Authorize(Roles = "Admin")]
+    [Route("[action]")]
+    public async Task<IActionResult> GetUsers()
+    {
+        var users =  userRepository.GetUsers();
+        return base.View(users);
     }
 }
